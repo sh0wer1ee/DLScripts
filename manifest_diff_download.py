@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 import errno
 import os
 import timeit
+import tqdm
 
 #PROXY CONFIG
 http_proxy = 'http://127.0.0.1:10809'
@@ -24,7 +25,6 @@ def check_target_path(target):
             if exc.errno != errno.EEXIST:
                 raise
 
-@asyncio.coroutine
 async def download(session, source, target):
     if os.path.exists(target): # Empty file will not be redownload if timeout
         return
@@ -83,12 +83,13 @@ async def main(mdir, o_mdir, lang, folder_name):
     download_set = manifest_dic.items() - old_manifest_dic.items()
     #print(download_set)
 
-    async with aiohttp.ClientSession() as session:
-        await asyncio.gather(*[
+    async with aiohttp.ClientSession() as session:     
+        tasks = [
             download(session, source, target)
-            for target, source in download_set
-        ])
-
+            for target, source in download_set] 
+        for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks), desc='download progress'):
+            await f
+            
 if __name__ == '__main__':
     parser = ArgumentParser(description='Download assets from dl-cdn.')
     parser.add_argument('-f', type=str, help='specific filename-hash directory', default='prs_manifests/')
@@ -97,10 +98,10 @@ if __name__ == '__main__':
     parser.add_argument('-d', type=str, help='download folder name', default='20200722')
     args = parser.parse_args()
 
-    start = timeit.default_timer()
+    #start = timeit.default_timer()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(args.f, args.o, args.l, args.d))
-    end = timeit.default_timer()
+    #end = timeit.default_timer()
 
-    print(end-start)
+    #print(end-start)
     

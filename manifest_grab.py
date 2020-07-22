@@ -26,7 +26,6 @@ def build_fileset(ver_str, platform):
         file_set.add(ftuple)
     return file_set
 
-@asyncio.coroutine
 async def download(session, url, filename):
     async with session.get(url) as resp:
         if resp.status != 200:
