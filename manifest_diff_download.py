@@ -94,7 +94,7 @@ if __name__ == '__main__':
     parser.add_argument('-f', type=str, help='specific filename-hash directory', default='prs_manifests/')
     parser.add_argument('-o', type=str, help='specific old filename-hash directory', default='prs_manifests/old/')
     parser.add_argument('-l', type=str, help='language(jp/zh_cn/zh_tw/en_us)', default='zh_cn')
-    parser.add_argument('-d', type=str, help='download folder name', default='20200612')
+    parser.add_argument('-d', type=str, help='download folder name', default='20200722')
     args = parser.parse_args()
 
     start = timeit.default_timer()
