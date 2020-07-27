@@ -89,19 +89,19 @@ async def main(mdir, o_mdir, lang, folder_name):
             for target, source in download_set] 
         for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks), desc='download progress'):
             await f
-            
+
 if __name__ == '__main__':
     parser = ArgumentParser(description='Download assets from dl-cdn.')
     parser.add_argument('-f', type=str, help='specific filename-hash directory', default='prs_manifests/')
     parser.add_argument('-o', type=str, help='specific old filename-hash directory', default='prs_manifests/old/')
     parser.add_argument('-l', type=str, help='language(jp/zh_cn/zh_tw/en_us)', default='zh_cn')
-    parser.add_argument('-d', type=str, help='download folder name', default='20200722')
+    parser.add_argument('-d', type=str, help='download folder name', default='20200728(masterAGITO)')
     args = parser.parse_args()
 
-    #start = timeit.default_timer()
+    start = timeit.default_timer()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(args.f, args.o, args.l, args.d))
-    #end = timeit.default_timer()
+    end = timeit.default_timer()
 
-    #print(end-start)
+    print('time spent: ' + str(end-start) + ' second.')
     
