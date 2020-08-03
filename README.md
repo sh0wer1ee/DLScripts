@@ -26,3 +26,5 @@ Scripts for dl.
    ```
    asset_download.py (-f manifest_dir) (-o old_manifest_dir) (-l language) (-d folder_name)
    ```
+- ```master_dump.py```: Dump mono jsons from ```master.asset```.
+- ```story_parser.py```: Dump and parse story assets into readable content, and rename them according to textlabel.

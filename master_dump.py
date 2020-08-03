@@ -1,0 +1,103 @@
+import os
+import re
+import shutil
+import json
+import unicodedata
+from UnityPy import AssetsManager
+
+master_filepath = 'master/'
+json_path = 'json/'
+output_path = 'wall/'
+os.makedirs(master_filepath, exist_ok=True)
+os.makedirs(json_path, exist_ok=True)
+os.makedirs(output_path, exist_ok=True)
+
+element = {
+    '0':'无',
+    '1':'火',
+    '2':'水',
+    '3':'风',
+    '4':'光',
+    '5':'暗'
+}
+
+abnormal = {
+    '_RegistAbnormalRate01':'Poison',
+    '_RegistAbnormalRate02':'Burn',
+    '_RegistAbnormalRate03':'Freeze',
+    '_RegistAbnormalRate04':'Paralysis',
+    '_RegistAbnormalRate05':'Blind',
+    '_RegistAbnormalRate06':'Stun',
+    '_RegistAbnormalRate07':'Bog',
+    '_RegistAbnormalRate08':'Sleep',
+    '_RegistAbnormalRate09':'Curse',
+    '_RegistAbnormalRate10':'Frostbite'
+}
+
+def process_json(tree):
+    while isinstance(tree, dict):
+        if 'dict' in tree:
+            tree = tree['dict']
+        elif 'list' in tree:
+            tree = tree['list']
+        elif 'entriesValue' in tree and 'entriesHashCode' in tree:
+            return {k: process_json(v) for k, v in zip(tree['entriesHashCode'], tree['entriesValue'])}
+        else:
+            return tree
+    return tree
+
+def dump_all_json(filepath, type):
+    am = AssetsManager(filepath)
+    for asset in am.assets.values():
+        for o in asset.objects.values():
+            data = o.read()
+            if str(data.type) == type:
+                tree = data.read_type_tree()
+                with open(json_path + data.name + '.json', 'w', encoding='utf8') as f:
+                    json.dump(process_json(tree), f, indent=2, ensure_ascii=False)
+
+def retrieve_wall_data():
+    wall_prefix = '21601'
+    wall_hpdata = {}
+    enemyparam_json = json.load(open(json_path + 'EnemyParam.json', encoding='utf8'))
+    #21601*0**  element(1-5) & level(01-99)
+    for eid in enemyparam_json:
+        if wall_prefix in eid:
+            wall_hpdata[str(eid)] = enemyparam_json[eid]['_HP']
+    with open(output_path + 'wall.csv', 'w', encoding='utf-8-sig') as f:
+        for w in wall_hpdata:
+            f.write(element[w[5]] + w[-2:] + ',' + str(wall_hpdata[w]) + '\n')
+    f.close()
+
+def retrieve_possible_70mc():
+    # sooooooooo UGLY!
+    skilldata_json = json.load(open(json_path + 'SkillData.json', encoding='utf8'))
+    textlabel_json = json.load(open(json_path + 'TextLabel.json', encoding='utf8'))
+    textlabel = {}
+    for tid in textlabel_json:
+        textlabel[textlabel_json[tid]['_Id']] = textlabel_json[tid]['_Text']
+    for sid in skilldata_json:
+        if skilldata_json[sid]['_AdvancedSkillLv1'] != 0:
+            try:
+                i = textlabel['CHARA_NAME_COMMENT_' + sid[:8]]
+                v = 'S' + sid[8]  + ': ' + textlabel['SKILL_NAME_' + sid]
+                eawid = len(i) + sum(1 for v in i if unicodedata.east_asian_width(v) in 'FWA')
+                pad = ' ' * (30 - eawid)
+                print("%s%s%s" % (i, pad, v))
+            except KeyError:
+                try:
+                    i = textlabel['CHARA_NAME_' + sid[:8]]
+                    v = 'S' + sid[8]  + ': ' + textlabel['SKILL_NAME_' + sid]
+                    eawid = len(i) + sum(1 for v in i if unicodedata.east_asian_width(v) in 'FWA')
+                    pad = ' ' * (30 - eawid)
+                    print("%s%s%s" % (i, pad, v))
+                except KeyError:
+                    print('CHARA_NAME_' + sid[:8])
+            
+def main():
+    dump_all_json(master_filepath, 'MonoBehaviour')
+    #retrieve_wall_data()
+    #retrieve_possible_70mc()
+
+if __name__ == '__main__':
+    main()
