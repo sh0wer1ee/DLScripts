@@ -92,10 +92,12 @@ async def main(mdir, o_mdir, lang, folder_name):
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='Download assets from dl-cdn.')
+    # parser.add_argument('-a', type=str, help='version string a (please refer to newdata_timeline.csv)', default='Dqlp7R50gYHxh4X5')
+    # parser.add_argument('-b', type=str, help='version string b (please refer to newdata_timeline.csv)', default='xFsVDpLXOu9wiyRF')
     parser.add_argument('-f', type=str, help='specific filename-hash directory', default='prs_manifests/')
     parser.add_argument('-o', type=str, help='specific old filename-hash directory', default='prs_manifests/old/')
     parser.add_argument('-l', type=str, help='language(jp/zh_cn/zh_tw/en_us)', default='zh_cn')
-    parser.add_argument('-d', type=str, help='download folder name', default='20200728(masterAGITO)')
+    parser.add_argument('-d', type=str, help='download folder name', default='20200804')
     args = parser.parse_args()
 
     start = timeit.default_timer()
