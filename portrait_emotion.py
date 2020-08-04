@@ -21,6 +21,7 @@ os.makedirs(INPUT, exist_ok=True)
 os.makedirs(OUTPUT, exist_ok=True)
 
 def processAsset(filePath):
+    offset = {}
     indexTable = {}
     imageData = {}
 
@@ -31,9 +32,13 @@ def processAsset(filePath):
             data = o.read()
             if str(data.type) == 'MonoBehaviour':
                 tree = data.read_type_tree()
-                indexTable = parseMono(tree)
+                offset, indexTable = parseMono(tree)
             if str(data.type) == 'Texture2D':
                 imageData[data.name] = data.image
+    
+    with open(('%s\\%s\\offset.json') % (OUTPUT, baseName), 'w', encoding='utf8') as f:
+        json.dump(offset, f, indent=2, ensure_ascii=False)
+
     imageData = loadNhaam(imageData)
     os.makedirs(os.path.join(OUTPUT, baseName), exist_ok=True)
     
@@ -42,10 +47,15 @@ def processAsset(filePath):
         combineYCbCrA(imageData, baseName, index, indexTable[index]) 
     
 def parseMono(mono):
+    partsDataTable = {}
     partsTextureIndexTable = {}
+    offsetX = int(mono['partsDataTable'][0]['position']['x'] - mono['partsDataTable'][0]['size']['x'] / 2)
+    offsetY = int(mono['partsDataTable'][0]['position']['y'] - mono['partsDataTable'][0]['size']['y'] / 2)
+    partsDataTable['x'] = offsetX
+    partsDataTable['y'] = offsetY
     for index in mono['partsTextureIndexTable']:
         partsTextureIndexTable[index['colorIndex']] = index['alphaIndex']
-    return partsTextureIndexTable
+    return partsDataTable, partsTextureIndexTable
 
 def combineYCbCrA(imageData, baseName, cidx = -1, aidx = -1):
     imageBase = ''

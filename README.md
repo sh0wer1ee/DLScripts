@@ -29,3 +29,4 @@ Scripts for dl.
 - ```master_dump.py```: Dump mono jsons from ```master.asset```.
 - ```story_parser.py```: Dump and parse story assets into readable content, and rename them according to textlabel.
 - ```portrait_emotion.py```: Dump the base and parts from portrait assets.
+- ```parts_combine.py```: Combine the base and parts with specific args.
