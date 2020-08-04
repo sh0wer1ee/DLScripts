@@ -134,9 +134,10 @@ dmypy.json
 /prs_manifests
 /assets
 /textlabel
-/raw_story
-/mid_story
+/story_asset
 /prs_story
 /json
 /dec
 /master
+/portrait_asset
+/portrait_output

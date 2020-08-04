@@ -23,12 +23,10 @@ from UnityPy import AssetsManager
 ROOT = os.path.dirname(os.path.realpath(__file__))
 #--CONFIG--#
 masterJSONPath = 'json/'
-INPUT = os.path.join(ROOT, 'raw_story')
-MIDDLE = os.path.join(ROOT, 'mid_story')
+INPUT = os.path.join(ROOT, 'story_asset')
 OUTPUT = os.path.join(ROOT, 'prs_story')
 #--CONFIG--#
 os.makedirs(INPUT, exist_ok=True)
-os.makedirs(MIDDLE, exist_ok=True)
 os.makedirs(OUTPUT, exist_ok=True)
 
 textlabel = {}
@@ -36,18 +34,9 @@ textlabelJson = json.load(open(masterJSONPath + 'TextLabel.json', encoding='utf8
 charadataJson = json.load(open(masterJSONPath + 'CharaData.json', encoding='utf8'))
 dragondataJson = json.load(open(masterJSONPath + 'DragonData.json', encoding='utf8'))      
 
-player_name = '尤蒂尔'
+playerName = '尤蒂尔'
 
-def check_target_path(target):
-    if not os.path.exists(os.path.dirname(target)):
-        try:
-            os.makedirs(os.path.dirname(target))
-        except OSError as exc: # Guard against race condition
-            if exc.errno != errno.EEXIST:
-                raise
-
-
-def parse_story(filePath):
+def parseStory(filePath):
     am = AssetsManager(filePath)
     for asset in am.assets.values():
         for o in asset.objects.values():
@@ -55,13 +44,12 @@ def parse_story(filePath):
             if str(data.type) == 'MonoBehaviour':
                 tree = data.read_type_tree()
                 outPath = OUTPUT +  generateName(filePath)
-                check_target_path(outPath)
+                os.makedirs(os.path.dirname(outPath), exist_ok=True)
                 with open(outPath, 'w', encoding='utf-8-sig') as o:
-                    o.write(parse_mono(tree['functions'][0]['commandList']))
+                    o.write(parseMono(tree['functions'][0]['commandList']))
                     o.close()
 
-
-def parse_mono(mono):
+def parseMono(mono):
     res = ''
     olTitle = ''
 
@@ -74,7 +62,7 @@ def parse_mono(mono):
             res = res + olTitle + ':\n'
         elif commandType == 'outline':
             if olTitle != '':
-                res = res + '\t' + commandData[0].replace('\\n', '\n\t').replace('{player_name}', player_name) + '\n'
+                res = res + '\t' + commandData[0].replace('\\n', '\n\t').replace('{player_name}', playerName) + '\n'
         elif commandType == 'telop':
             res = res + '\n'
             for arg in commandData:
@@ -82,10 +70,10 @@ def parse_mono(mono):
                     res = res + '\t' + arg + '\n'
             res = res + '\n'
         elif commandType == 'add_book_text':
-            res = res + '\t' + commandData[0].replace('\\n', '\n\t').replace('{player_name}', player_name) + '\n\n'
+            res = res + '\t' + commandData[0].replace('\\n', '\n\t').replace('{player_name}', playerName) + '\n\n'
         elif commandType == 'print':
-            res = res + commandData[0].replace('{player_name}', player_name) + ':\n'
-            res = res + '\t' + commandData[1].replace('\\n', '\n\t').replace('{player_name}', player_name) + '\n'
+            res = res + commandData[0].replace('{player_name}', playerName) + ':\n'
+            res = res + '\t' + commandData[1].replace('\\n', '\n\t').replace('{player_name}', playerName) + '\n'
         # else:
         #     continue
 
@@ -191,7 +179,7 @@ def main():
             for f in pbar:
                 pbar.set_description('processing %s...' % f)
                 src = os.path.realpath(os.path.join(root, f))
-                parse_story(src)
+                parseStory(src)
 
 if __name__ == '__main__':
     main()

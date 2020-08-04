@@ -12,6 +12,18 @@ os.makedirs(PRS, exist_ok=True)
 
 pattern = r'string name = \"(.*)\"(?:\r)*(?:\n)*(?:\t)*string hash = \"(.*)\"'
 
+def process_json(tree):
+    while isinstance(tree, dict):
+        if 'dict' in tree:
+            tree = tree['dict']
+        elif 'list' in tree:
+            tree = tree['list']
+        elif 'entriesValue' in tree and 'entriesHashCode' in tree:
+            return {k: process_json(v) for k, v in zip(tree['entriesHashCode'], tree['entriesValue'])}
+        else:
+            return tree
+    return tree
+    
 def main(input_folder, output_folder):
     for root, dirs, files in os.walk(input_folder, topdown=False):
         for f in files:
