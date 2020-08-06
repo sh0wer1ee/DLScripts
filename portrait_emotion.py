@@ -24,6 +24,8 @@ def processAsset(filePath):
     offset = {}
     indexTable = {}
     imageData = {}
+    dataJson = {}
+    fileList = []
 
     baseName = os.path.basename(filePath)
     am = UnityPy.AssetsManager(filePath)
@@ -35,9 +37,16 @@ def processAsset(filePath):
                 offset, indexTable = parseMono(tree)
             if str(data.type) == 'Texture2D':
                 imageData[data.name] = data.image
+
+    for cidx in indexTable:
+        fileList.append(('/%s/%s_parts_c%s.png')%(baseName, baseName, str(cidx).zfill(3)))
     
-    with open(('%s\\%s\\offset.json') % (OUTPUT, baseName), 'w', encoding='utf8') as f:
-        json.dump(offset, f, indent=2, ensure_ascii=False)
+    dataJson['offset'] = offset
+    dataJson['indexTable'] = indexTable
+    dataJson['fileList'] = fileList
+
+    with open(('%s\\%s\\data.json') % (OUTPUT, baseName), 'w', encoding='utf8') as f:
+        json.dump(dataJson, f, indent=2, ensure_ascii=False)
 
     imageData = loadNhaam(imageData)
     os.makedirs(os.path.join(OUTPUT, baseName), exist_ok=True)
@@ -91,8 +100,11 @@ def loadNhaam(imageData):
     return imageData
             
 def main():
+    dirData = {'fileList' : []}
     for root, dirs, files in os.walk(INPUT, topdown=False):
         if files:
+            if len(files) > 1:
+                dirData['fileList'] = files
             if files == ['100007_01_base_y']:
                 continue
             pbar = tqdm.tqdm(files)
@@ -100,6 +112,11 @@ def main():
                 pbar.set_description('processing %s...' % f)
                 src = os.path.realpath(os.path.join(root, f))
                 processAsset(src)
+    with open(('%s\\dirData.json') % OUTPUT, 'w', encoding='utf8') as f:
+        json.dump(dirData, f, indent=2, ensure_ascii=False)
+    
+
+    
 
 if __name__ == '__main__':
     main()
