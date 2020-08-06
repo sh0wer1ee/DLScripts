@@ -14,9 +14,12 @@ from PIL import Image
 
 ROOT = os.path.dirname(os.path.realpath(__file__))
 #--CONFIG--#
-INPUT = os.path.join(ROOT, 'portrait_asset')
-OUTPUT = os.path.join(ROOT, 'portrait_output')
+githubPrefix = 'DLPortraits'
+inputFolder = 'portrait_asset'
+outputFolder = 'portrait_output'
 #--CONFIG--#
+INPUT = os.path.join(ROOT, inputFolder)
+OUTPUT = os.path.join(ROOT, outputFolder)
 os.makedirs(INPUT, exist_ok=True)
 os.makedirs(OUTPUT, exist_ok=True)
 
@@ -39,7 +42,7 @@ def processAsset(filePath):
                 imageData[data.name] = data.image
 
     for cidx in indexTable:
-        fileList.append(('/%s/%s_parts_c%s.png')%(baseName, baseName, str(cidx).zfill(3)))
+        fileList.append(('/%s/%s/%s/%s_parts_c%s.png')%(githubPrefix, outputFolder, baseName, baseName, str(cidx).zfill(3)))
     
     dataJson['offset'] = offset
     dataJson['indexTable'] = indexTable
@@ -47,7 +50,7 @@ def processAsset(filePath):
 
     with open(('%s\\%s\\data.json') % (OUTPUT, baseName), 'w', encoding='utf8') as f:
         json.dump(dataJson, f, indent=2, ensure_ascii=False)
-
+    
     imageData = loadNhaam(imageData)
     os.makedirs(os.path.join(OUTPUT, baseName), exist_ok=True)
     
