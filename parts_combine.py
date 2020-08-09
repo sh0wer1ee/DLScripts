@@ -14,14 +14,14 @@ os.makedirs(INPUT, exist_ok=True)
 os.makedirs(OUTPUT, exist_ok=True)
 
 def combineImage(firstLayerID, secondLayerID, baseID):
-    offset = json.load(open(('%s\\%s\\offset.json') % (INPUT, baseID), 'r', encoding = 'utf8'))
+    data = json.load(open(('%s\\%s\\data.json') % (INPUT, baseID), 'r', encoding = 'utf8'))
     firstLayer = Image.open(('%s\\%s\\%s_parts_c%s.png') % (INPUT, baseID, baseID, firstLayerID))
     secondLayer = Image.open(('%s\\%s\\%s_parts_c%s.png') % (INPUT, baseID, baseID, secondLayerID))
     baseLayer = Image.open(('%s\\%s\\%s_base.png') % (INPUT, baseID, baseID))
 
     # secondLayer.paste(firstLayer, (0,0), firstLayer)
     secondLayer = Image.alpha_composite(secondLayer, firstLayer)
-    baseLayer.paste(secondLayer,(offset['x'], offset['y']), secondLayer)
+    baseLayer.paste(secondLayer,(data['offset']['x'], data['offset']['y']), secondLayer)
     baseLayer.save(('%s\\%s_c%s_c%s.png') % (OUTPUT, baseID, firstLayerID, secondLayerID))
 
 if __name__ == '__main__':

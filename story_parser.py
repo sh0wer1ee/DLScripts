@@ -22,6 +22,7 @@ from UnityPy import AssetsManager
 
 ROOT = os.path.dirname(os.path.realpath(__file__))
 #--CONFIG--#
+playerName = '尤蒂尔'
 masterJSONPath = 'json/'
 INPUT = os.path.join(ROOT, 'story_asset')
 OUTPUT = os.path.join(ROOT, 'prs_story')
@@ -34,7 +35,7 @@ textlabelJson = json.load(open(masterJSONPath + 'TextLabel.json', encoding='utf8
 charadataJson = json.load(open(masterJSONPath + 'CharaData.json', encoding='utf8'))
 dragondataJson = json.load(open(masterJSONPath + 'DragonData.json', encoding='utf8'))      
 
-playerName = '尤蒂尔'
+
 
 def parseStory(filePath):
     am = AssetsManager(filePath)

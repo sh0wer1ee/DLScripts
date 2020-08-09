@@ -1,9 +1,6 @@
 '''
     Dump the portrait base and parts from portrait assets.
     You need to download them with manifest_diff_download.py.
-
-    TODO:
-        Use pil to merge the parts to base.
 '''
 
 import os
@@ -14,12 +11,15 @@ from PIL import Image
 
 ROOT = os.path.dirname(os.path.realpath(__file__))
 #--CONFIG--#
+playerName = '尤蒂尔'
 githubPrefix = 'DLPortraits'
 inputFolder = 'portrait_asset'
 outputFolder = 'portrait_output'
+jsonFolder = 'json'
 #--CONFIG--#
 INPUT = os.path.join(ROOT, inputFolder)
 OUTPUT = os.path.join(ROOT, outputFolder)
+JSON = os.path.join(ROOT, jsonFolder)
 os.makedirs(INPUT, exist_ok=True)
 os.makedirs(OUTPUT, exist_ok=True)
 
@@ -41,16 +41,15 @@ def processAsset(filePath):
             if str(data.type) == 'Texture2D':
                 imageData[data.name] = data.image
 
-    for cidx in indexTable:
-        fileList.append(('/%s/%s/%s/%s_parts_c%s.png')%(githubPrefix, outputFolder, baseName, baseName, str(cidx).zfill(3)))
+    
+    partsData = classifyFaceMouth(indexTable, baseName)
     
     dataJson['offset'] = offset
-    dataJson['indexTable'] = indexTable
-    dataJson['fileList'] = fileList
+    dataJson['partsData'] = partsData
 
     with open(('%s\\%s\\data.json') % (OUTPUT, baseName), 'w', encoding='utf8') as f:
         json.dump(dataJson, f, indent=2, ensure_ascii=False)
-    
+        
     imageData = loadNhaam(imageData)
     os.makedirs(os.path.join(OUTPUT, baseName), exist_ok=True)
     
@@ -101,13 +100,52 @@ def loadNhaam(imageData):
             if str(data.type) == 'Texture2D':
                 imageData[data.name] = data.image
     return imageData
-            
+
+def classifyFaceMouth(indexTable, baseName):
+    partsData = {
+        'faceParts':[],
+        'mouthParts':[]
+    }
+    sortedList = sorted(indexTable.items(), key = lambda kv:(kv[1], kv[0]))
+    try: # some indexTables are empty
+        minID = sortedList[0][1]
+    except IndexError:
+        return partsData
+    for cidx, aidx in sortedList:
+        filePath = ('/%s/%s/%s/%s_parts_c%s.png')%(githubPrefix, outputFolder, baseName, baseName, str(cidx).zfill(3))   
+        if aidx == minID:
+            partsData['faceParts'].append(filePath)
+        else:
+            if baseName == '100001_03' and (aidx == 5 or aidx == 6):
+                partsData['faceParts'].append(filePath)
+            else:
+                partsData['mouthParts'].append(filePath)
+    return partsData
+
+def getCharaName(fileList):
+    fileDic = {}
+    textlabel = {}
+    textlabelJson = json.load(open(JSON + '\\TextLabel.json', encoding='utf8'))
+    for tid in textlabelJson:
+        textlabel[textlabelJson[tid]['_Id']] = textlabelJson[tid]['_Text']
+    # STORY_UNIT_GROUP_{cid}00
+    for cid in fileList:
+        try:
+            if cid.split('_')[0] == '100001':
+                fileDic[cid] = ('%s %s') % (cid, playerName)
+            else:
+                fileDic[cid] = ('%s %s') % (cid, textlabel[('STORY_UNIT_GROUP_%s00') % (cid.split('_')[0])])
+        except KeyError:
+            fileDic[cid] = '%s ' % cid
+        
+    return fileDic
+
 def main():
-    dirData = {'fileList' : []}
+    #dirData = {'fileList' : {}}
     for root, dirs, files in os.walk(INPUT, topdown=False):
         if files:
-            if len(files) > 1:
-                dirData['fileList'] = files
+    #        if len(files) > 1:
+    #            dirData['fileList'] = getCharaName(files)
             if files == ['100007_01_base_y']:
                 continue
             pbar = tqdm.tqdm(files)
@@ -115,8 +153,9 @@ def main():
                 pbar.set_description('processing %s...' % f)
                 src = os.path.realpath(os.path.join(root, f))
                 processAsset(src)
-    with open(('%s\\dirData.json') % OUTPUT, 'w', encoding='utf8') as f:
-        json.dump(dirData, f, indent=2, ensure_ascii=False)
+
+    #with open(('%s\\dirData.json') % OUTPUT, 'w', encoding='utf8') as f:
+    #    json.dump(dirData, f, indent=2, ensure_ascii=False)
     
 
     
