@@ -34,6 +34,18 @@ abnormal = {
     '_RegistAbnormalRate10':'Frostbite'
 }
 
+def process_json(tree):
+    while isinstance(tree, dict):
+        if 'dict' in tree:
+            tree = tree['dict']
+        elif 'list' in tree:
+            tree = tree['list']
+        elif 'entriesValue' in tree and 'entriesHashCode' in tree:
+            return {k: process_json(v) for k, v in zip(tree['entriesHashCode'], tree['entriesValue'])}
+        else:
+            return tree
+    return tree
+
 def dumpAllJson(filepath, type):
     am = AssetsManager(filepath)
     for asset in am.assets.values():
@@ -42,7 +54,7 @@ def dumpAllJson(filepath, type):
             if str(data.type) == type:
                 tree = data.read_type_tree()
                 with open(jsonPath + data.name + '.json', 'w', encoding='utf8') as f:
-                    json.dump(tree, f, indent=2, ensure_ascii=False)
+                    json.dump(process_json(tree), f, indent=2, ensure_ascii=False)
 
 def retrieveWallData():
     wallPrefix = '21601'
@@ -84,8 +96,8 @@ def retrievePossible70mc():
             
 def main():
     dumpAllJson(masterFilepath, 'MonoBehaviour')
-    #retrieveWallData()
-    #retrievePossible70mc()
+    retrieveWallData()
+    retrievePossible70mc()
 
 if __name__ == '__main__':
     main()
