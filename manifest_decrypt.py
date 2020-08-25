@@ -65,14 +65,20 @@ def rj256dec(enc, dec, rijndael_cbc):
             d.write(dec_bin)
 
 def select_method(args, key, iv):
-
     if args.method == 'cs':
         csmain(key, iv)
     elif args.method == 'py': 
+        check_keyiv(key, iv)
         pymain(key, iv)
     else:
         print("Incorrect -m args! Enter \"py\" or \"cs\"!")
         exit(1)
+
+def decAll(archive_folder, dec_archive_folder, key, iv):
+    for f in os.listdir(archive_folder):
+        if os.path.isdir(os.path.join(archive_folder, f)):
+            os.system('dec_v2.exe %s %s %s %s' % (bytes.decode(key), bytes.decode(iv), os.path.join(archive_folder, f), dec_archive_folder))
+            print(os.path.join(archive_folder, f))
 
 if __name__ == '__main__':
     parser = ArgumentParser(description = 'Decrypt the raw manifests with provided key and id.')
@@ -84,5 +90,5 @@ if __name__ == '__main__':
     key = args.key if args.key else load_key()
     iv = args.iv if args.iv else load_iv()
     
-    check_keyiv(key, iv)   
+    # decAll('manifests_archive', 'dec_manifests_archive', key, iv)   
     select_method(args, key, iv)
