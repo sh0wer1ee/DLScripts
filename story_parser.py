@@ -1,6 +1,7 @@
 '''
     Parse the story assets directly which are downloaded by manifest_diff_download.py.
     Run master_dump.py before using this script to build necessary json files.
+    Not compatible with JP version.
 '''
 
 import os
@@ -141,7 +142,7 @@ def generateName(filepath):
                 try:
                     if charadataJson[cd]['_VariationId'] == 1:
                         charaName = textlabel[charadataJson[cd]['_Name']]
-                    else: # Zena(Another Zethia) is special here, she use Zethia's baseID but VariationId is not 1
+                    else: # Zena(Another Zethia) is special here, she uses Zethia's baseID but VariationId is not 1
                           # And she is technically an alter of Zethia but not with second name.
                         charaName = textlabel[charadataJson[cd]['_SecondName']]     
                 except KeyError:
