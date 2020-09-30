@@ -138,7 +138,8 @@ def generateName(filepath):
         charaVariationId = fileName[6:8]
         episode = fileName[-1]
         for cd in charadataJson:
-            if charadataJson[cd]['_BaseId'] == int(charaBaseID) and charadataJson[cd]['_VariationId'] == int(charaVariationId):
+            if charadataJson[cd]['_BaseId'] == int(charaBaseID) and charadataJson[cd]['_VariationId'] == int(charaVariationId) and str(charadataJson[cd]['_Id'])[0] != '9':
+                # some id begin with 9 match the condition but is not correct.
                 try:
                     if charadataJson[cd]['_VariationId'] == 1:
                         charaName = textlabel[charadataJson[cd]['_Name']]
@@ -146,7 +147,7 @@ def generateName(filepath):
                           # And she is technically an alter of Zethia but not with second name.
                         charaName = textlabel[charadataJson[cd]['_SecondName']]     
                 except KeyError:
-                    charaName = textlabel[charadataJson[cd]['_Name']]         
+                    charaName = textlabel[charadataJson[cd]['_Name']]       
         try:
             storyName = textlabel[('STORY_UNIT_NAME_%s') % fileName]
         except KeyError:
