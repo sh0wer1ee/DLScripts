@@ -7,6 +7,7 @@ dl_cdn_header = 'http://dragalialost.akamaized.net/dl/assetbundles/'
 ROOT = os.path.dirname(os.path.realpath(__file__))
 DEC = os.path.join(ROOT, 'dec_manifests')
 PRS = os.path.join(ROOT, 'prs_manifests')
+
 os.makedirs(DEC, exist_ok=True)
 os.makedirs(PRS, exist_ok=True)
 
@@ -50,11 +51,21 @@ def export_obj(obj, filepath, buildtarget):
             parsed_list = parse(data.dump())
             with open(filepath, 'w') as f:
                 for p in parsed_list:
-                    f.write(p[0] + ',' + dl_cdn_header + sp[1] + '/' +p[1][0:2] + '/' +  p[1] + '\n')
+                    path = p[0] if p[0] != 'shader' else '_shader' # deal with the name conflict
+                    f.write('%s,%s%s/%s/%s\n' % (path , dl_cdn_header, sp[1], p[1][0:2], p[1]))
 
 def parse(manifest):
     mlist = re.findall(pattern, manifest, re.MULTILINE)
     return mlist
+
+def dump_all(dec_archive_folder, prs_archive_folder):
+    os.makedirs(dec_archive_folder, exist_ok=True)
+    os.makedirs(prs_archive_folder, exist_ok=True)
+    for f in os.listdir(dec_archive_folder):
+        if os.path.isdir(os.path.join(dec_archive_folder, f)):
+            os.makedirs(prs_archive_folder +'/'+ f, exist_ok=True)
+            main(os.path.join(dec_archive_folder, f), prs_archive_folder +'/'+ f)
+
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='Dump and parse the decrypted manifests.')
@@ -62,4 +73,5 @@ if __name__ == '__main__':
     parser.add_argument('-o', type=str, help='output folder', default=PRS)
     args = parser.parse_args()
 
+    #dump_all('dec_manifests_archive/manifests_archive', 'prs_manifests_archive')
     main(args.i, args.o)

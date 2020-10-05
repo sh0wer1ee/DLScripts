@@ -52,7 +52,7 @@ def dumpAllJson(filepath, type):
         for o in asset.objects.values():
             data = o.read()
             if str(data.type) == type:
-                tree = data.read_type_tree()
+                tree = data.type_tree
                 with open(jsonPath + data.name + '.json', 'w', encoding='utf8') as f:
                     json.dump(process_json(tree), f, indent=2, ensure_ascii=False)
 

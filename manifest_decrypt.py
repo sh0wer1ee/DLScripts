@@ -64,10 +64,10 @@ def rj256dec(enc, dec, rijndael_cbc):
         with open(os.path.join(DEC, dec), "wb") as d:
             d.write(dec_bin)
 
-def select_method(args, key, iv):
-    if args.method == 'cs':
+def select_method(method, key, iv):
+    if method == 'cs':
         csmain(key, iv)
-    elif args.method == 'py': 
+    elif method == 'py': 
         check_keyiv(key, iv)
         pymain(key, iv)
     else:
@@ -90,5 +90,5 @@ if __name__ == '__main__':
     key = args.key if args.key else load_key()
     iv = args.iv if args.iv else load_iv()
     
-    # decAll('manifests_archive', 'dec_manifests_archive', key, iv)   
-    select_method(args, key, iv)
+    #decAll('manifests_archive', 'dec_manifests_archive', key, iv)   
+    select_method(args.method, key, iv)
