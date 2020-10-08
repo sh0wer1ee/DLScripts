@@ -5,6 +5,7 @@ import errno
 import os
 import timeit
 import tqdm
+import shutil
 
 #PROXY CONFIG
 http_proxy = 'http://127.0.0.1:10809'
@@ -91,19 +92,21 @@ async def main(mdir, o_mdir, lang, folder_name):
             await f
 
 if __name__ == '__main__':
+    folder_name = '20201005'
     parser = ArgumentParser(description='Download assets from dl-cdn.')
     # parser.add_argument('-a', type=str, help='version string a (please refer to newdata_timeline.csv)', default='Dqlp7R50gYHxh4X5')
     # parser.add_argument('-b', type=str, help='version string b (please refer to newdata_timeline.csv)', default='xFsVDpLXOu9wiyRF')
     parser.add_argument('-f', type=str, help='specific filename-hash directory', default='prs_manifests/')
     parser.add_argument('-o', type=str, help='specific old filename-hash directory', default='prs_manifests/old/')
     parser.add_argument('-l', type=str, help='language(jp/zh_cn/zh_tw/en_us)', default='zh_cn')
-    parser.add_argument('-d', type=str, help='download folder name', default='20200804')
+    parser.add_argument('-d', type=str, help='download folder name', default=folder_name)
     args = parser.parse_args()
 
     start = timeit.default_timer()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(args.f, args.o, args.l, args.d))
     end = timeit.default_timer()
-
+    
+    #shutil.move(folder_name, '../updatedata_archive')
     print('time spent: ' + str(end-start) + ' second.')
     

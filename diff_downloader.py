@@ -1,3 +1,6 @@
+'''
+    Diff between two versions and download assets.
+'''
 import aiohttp
 import asyncio
 from argparse import ArgumentParser
@@ -7,14 +10,16 @@ import timeit
 import tqdm
 import shutil
 
+#--Config--
 http_proxy = 'http://127.0.0.1:10809'
+#--Config--
 
 lang_list = ['zh_cn', 'zh_tw', 'en_us', 'jp']
 manifest_str = ['assetbundle', '.' , 'manifest']
 
 def merge_path_dir(path):
     new_dir = os.path.dirname(path).replace('/', '.')
-    return new_dir + '/' + os.path.basename(path)
+    return os.path.join(new_dir, os.path.basename(path))
 
 def check_target_path(target):
     if not os.path.exists(os.path.dirname(target)):
@@ -27,16 +32,14 @@ def check_target_path(target):
 async def download(session, source, target):
     if os.path.exists(target): # Empty file will not be redownload if timeout
         return
-#    print('Download', source, target)
     async with session.get(source, proxy = http_proxy) as resp:
-#        print(target, resp.status)
         if resp.status != 200:
             print(source)
         assert resp.status == 200
         check_target_path(target)
         with open(target, 'wb') as f:
             f.write(await resp.read())
-#        print(target, ' download complete.')
+            f.close()
 
 def read_manifest(manifest, folder_name, filter_str):
     manifest_dic = dict()
@@ -46,15 +49,14 @@ def read_manifest(manifest, folder_name, filter_str):
                 sp = l.split(',')
                 if not filter_str or filter_str in sp[0]:
                     if sp[1].strip() != '':
-                        manifest_dic[folder_name + '/' + merge_path_dir(sp[0].strip())] = sp[1].strip()
+                        manifest_dic['%s/%s' % (folder_name, merge_path_dir(sp[0].strip()))] = sp[1].strip()
+            m.close()
     except FileNotFoundError:
-        print(manifest + " not exists!")
+        print("%s not exists!" % manifest)
         exit(-1)
-    
-    #print(manifest_dic)
     return manifest_dic
 
-async def main(mdir, o_mdir, lang, folder_name, filter_str):
+async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str):
     jp_manifest_dic = dict()
     other_manifest_dic = dict()
     manifest_dic = dict()
@@ -66,49 +68,53 @@ async def main(mdir, o_mdir, lang, folder_name, filter_str):
         print("-l should be jp/en_us/zh_cn/zh_tw!") 
         exit(0) 
 
-    jp_manifest_dic = read_manifest(mdir + manifest_str[0] + manifest_str[1] + manifest_str[2], folder_name, filter_str)
+    jp_manifest_dic = read_manifest(os.path.join(mdir, str(manifest_str[0] + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
     if lang != lang_list[3]:
-        other_manifest_dic = read_manifest(mdir + manifest_str[0] + manifest_str[1] + lang + manifest_str[1] + manifest_str[2], folder_name, filter_str)
+        other_manifest_dic = read_manifest(os.path.join(mdir, str(manifest_str[0] + manifest_str[1] + lang + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
     manifest_dic = {**jp_manifest_dic, **other_manifest_dic}
 
     if o_mdir is not None:
-        old_jp_manifest_dic = read_manifest(o_mdir + manifest_str[0] + manifest_str[1] + manifest_str[2], folder_name, filter_str)
+        old_jp_manifest_dic = read_manifest(os.path.join(o_mdir, str(manifest_str[0] + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
         if lang != lang_list[3]:
-            old_other_manifest_dic = read_manifest(o_mdir + manifest_str[0] + manifest_str[1] + lang + manifest_str[1] + manifest_str[2], folder_name, filter_str)
+            old_other_manifest_dic = read_manifest(os.path.join(o_mdir, str(manifest_str[0] + manifest_str[1] + lang + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
         old_manifest_dic = {**old_jp_manifest_dic, **old_other_manifest_dic}
-    
-    download_set = manifest_dic.items() - old_manifest_dic.items()
+    if localized_only:
+        download_set = other_manifest_dic.items() - old_other_manifest_dic.items()
+    else:
+        download_set = manifest_dic.items() - old_manifest_dic.items()
 
     async with aiohttp.ClientSession() as session:     
         tasks = [
             download(session, source, target)
             for target, source in download_set] 
-        for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks), desc='download progress'):
+        for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks), desc='Download progress'):
             await f
 
 if __name__ == '__main__':
-    '''
-        下载数据将会被存放至folder_name文件夹，可以自定义。
-        可以直接修改-a和-b后面的default值然后直接运行本py文件。
-        如果-b参数是None，则不进行diff，直接下载全部数据。
-        注:-a和-b的路径，最后一定要加斜杠（举例：default='prs_manifests_archive/20200927_MV2M0tB8d23y0f3M/'）
 
-        -f的字符串筛选默认为None，表示全部下载。如果不为空，则下载文件路径包含-f字符串的文件。
-            （举例子，当default='icon/'时，会下载所有路径包含icon/的文件）
-    '''
-    folder_name = '20200927'
-    parser = ArgumentParser(description='从CDN服务器直接下载数据')
-    parser.add_argument('-a', type=str, help='请填写较新的manifest文件夹名', default='prs_manifests_archive/20200927_MV2M0tB8d23y0f3M/')
-    parser.add_argument('-b', type=str, help='请填写较旧的manifest文件夹名', default=None)
-    parser.add_argument('-l', type=str, help='语言版本(jp/zh_cn/zh_tw/en_us)', default='zh_cn')
-    parser.add_argument('-d', type=str, help='下载位置', default=folder_name)
-    parser.add_argument('-f', type=str, help='字符串筛选', default=None)
+    #--Default--
+    new_manifest_folder = 'prs_manifests_archive/20201005_ctA0ok1hpqbQLNpi'
+    old_manifest_folder = 'prs_manifests_archive/20200930_vOdu87tvIj7oEBu9'
+    lang = 'zh_cn'
+    localized_only = False
+    folder_name = '20201005'
+    filter_str = None
+    #--Default--
+    
+
+    parser = ArgumentParser(description='Diff between versions and download the assets.')
+    parser.add_argument('-n', type=str, help='Manifest folder (Newer version)', default=new_manifest_folder)
+    parser.add_argument('-o', type=str, help='Manifest folder (Older version)', default=old_manifest_folder)
+    parser.add_argument('-l', type=str, help='Language version (jp/zh_cn/zh_tw/en_us)', default=lang)
+    parser.add_argument('-c', type=str, help='Localized only? (True/False)', default=localized_only)
+    parser.add_argument('-d', type=str, help='Download location', default=folder_name)
+    parser.add_argument('-f', type=str, help='Filter string', default=filter_str)
     args = parser.parse_args()
 
     start = timeit.default_timer()
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(args.a, args.b, args.l, args.d, args.f))
+    loop.run_until_complete(main(args.n, args.o, args.l, args.c, args.d, args.f))
     end = timeit.default_timer()
 
-    print('time spent: ' + str(end-start) + ' second.')
+    print('Time spent: ' + str(end-start) + ' second.')
     

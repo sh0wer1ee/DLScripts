@@ -165,6 +165,5 @@ weapon_data.py
 /dec_manifests_archive
 /bgm
 season
-decrypter.py
 cv.csv
 batch_rename.py

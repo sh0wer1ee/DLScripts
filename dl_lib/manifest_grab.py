@@ -83,7 +83,7 @@ async def download_all_archive(platform):
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='Download manifest files from dl-cdn.')
-    parser.add_argument('-v', type=str, help='version string', default='zG6V5jeJKbt1sHyi')
+    parser.add_argument('-v', type=str, help='version string', default='ctA0ok1hpqbQLNpi')
     parser.add_argument('-p', type=str, help='platform(iOS or Android)', default='Android')
     args = parser.parse_args()
     
