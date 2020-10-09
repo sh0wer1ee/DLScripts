@@ -10,9 +10,9 @@ import os
 import shutil
 import pandas as pd
 
-import dl_lib.manifest_grab as manifest_grab
-import dl_lib.manifest_decrypt as manifest_decrypt
-import dl_lib.manifest_dump as manifest_dump
+import manifest_grab
+import manifest_decrypt
+import manifest_dump
 
 def download(date, resVer):
     loop = asyncio.get_event_loop()
@@ -55,9 +55,9 @@ def appendRecord(date, resVer, note=None):
 
 if __name__ == '__main__':
     #--Config--
-    date = '20201005'
-    resVer = 'ctA0ok1hpqbQLNpi'
-    note = '14:00 iria & anniversary raid part2'
+    date = '20201009'
+    resVer = 'rUAJ84rrQoQKbHPT'
+    note = '14:00 master agito & wind platinum'
     #--Config--
 
     download(date, resVer)
@@ -66,5 +66,5 @@ if __name__ == '__main__':
     archiveDecManifests(date, resVer)
     parse()
     archivePrsManifests(date, resVer)
-    appendRecord(date, resVer, note=None)
+    #appendRecord(date, resVer, note=None)
 
