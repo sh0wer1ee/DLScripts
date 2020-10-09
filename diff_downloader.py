@@ -91,7 +91,6 @@ async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str):
             await f
 
 if __name__ == '__main__':
-
     #--Default--
     new_manifest_folder = 'prs_manifests_archive/20201009_rUAJ84rrQoQKbHPT'
     old_manifest_folder = 'prs_manifests_archive/20201005_ctA0ok1hpqbQLNpi'
@@ -101,7 +100,6 @@ if __name__ == '__main__':
     filter_str = None
     #--Default--
     
-
     parser = ArgumentParser(description='Diff between versions and download the assets.')
     parser.add_argument('-n', type=str, help='Manifest folder (Newer version)', default=new_manifest_folder)
     parser.add_argument('-o', type=str, help='Manifest folder (Older version)', default=old_manifest_folder)

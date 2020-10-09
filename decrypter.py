@@ -9,49 +9,71 @@ import asyncio
 import os
 import shutil
 import pandas as pd
+import dl_lib.manifest_grab as manifest_grab
+import dl_lib.manifest_decrypt as manifest_decrypt
+import dl_lib.manifest_dump as manifest_dump
 
-import manifest_grab
-import manifest_decrypt
-import manifest_dump
+ROOT = os.path.dirname(os.path.realpath(__file__))
+MANIFESTS = os.path.join(ROOT, 'manifests')
+ARCHIVES = os.path.join(ROOT, 'manifests_archive')
+DEC = os.path.join(ROOT, 'dec_manifests')
+DEC_ARCHIVES = os.path.join(ROOT, 'dec_manifests_archive')
+PRS = os.path.join(ROOT, 'prs_manifests')
+PRS_ARCHIVES = os.path.join(ROOT, 'prs_manifests_archive')
+os.makedirs(MANIFESTS, exist_ok=True)
+os.makedirs(ARCHIVES, exist_ok=True)
+os.makedirs(DEC, exist_ok=True)
+os.makedirs(DEC_ARCHIVES, exist_ok=True)
+os.makedirs(PRS, exist_ok=True)
+os.makedirs(PRS_ARCHIVES, exist_ok=True)
 
 def download(date, resVer):
+    print('downloading manifests...')
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(manifest_grab.main(resVer, 'Android'))
-    print("manifests download completed.")
+    loop.run_until_complete(manifest_grab.main(resVer, 'Android', MANIFESTS))
+    print('manifests download completed.')
 
 def archiveManifests(date, resVer):
-    archive_path = '%s/%s_%s' % (manifest_grab.ARCHIVES, date, resVer)
+    archive_path = '%s/%s_%s' % (ARCHIVES, date, resVer)
     os.makedirs(archive_path, exist_ok=True)
-    for f in os.listdir(manifest_grab.MANIFESTS):
+    for f in os.listdir(MANIFESTS):
         if 'manifest' in f:
-            shutil.copy(os.path.join(manifest_grab.MANIFESTS, f), archive_path)
+            shutil.copy(os.path.join(MANIFESTS, f), archive_path)
+    print('manifests archived.')
 
 def decrypt():
-    manifest_decrypt.select_method('cs', manifest_decrypt.load_key(), manifest_decrypt.load_iv())
+    print('decrypting...')
+    manifest_decrypt.decrypt(manifest_decrypt.load_key(), manifest_decrypt.load_iv())
+
 
 def archiveDecManifests(date, resVer):
-    archive_path = '%s/%s_%s' % ('dec_manifests_archive/manifests_archive', date, resVer)
+    archive_path = os.path.join(DEC_ARCHIVES, '%s_%s' % (date, resVer))
     os.makedirs(archive_path, exist_ok=True)
-    for f in os.listdir(manifest_decrypt.DEC):
+    for f in os.listdir(DEC):
         if 'manifest' in f:
-            shutil.copy(os.path.join(manifest_decrypt.DEC, f), archive_path)
+            shutil.copy(os.path.join(DEC, f), archive_path)
+    print('decrypted manifests archived.')
 
 def parse():
-    manifest_dump.main(manifest_dump.DEC, manifest_dump.PRS)
+    print('dumping...')
+    manifest_dump.main(DEC, PRS)
+    print('finished.')
 
 def archivePrsManifests(date, resVer):
-    archive_path = '%s/%s_%s' % ('prs_manifests_archive', date, resVer)
+    archive_path = os.path.join(PRS_ARCHIVES, '%s_%s' % (date, resVer))
     os.makedirs(archive_path, exist_ok=True)
-    for f in os.listdir(manifest_dump.PRS):
+    for f in os.listdir(PRS):
         if 'manifest' in f:
-            shutil.copy(os.path.join(manifest_dump.PRS, f), archive_path)
+            shutil.copy(os.path.join(PRS, f), archive_path)
+    print('parsed manifests archived.')
 
 def appendRecord(date, resVer, note=None):
     df = pd.read_csv('newdata_timeline.csv')
-    newRow = pd.Series([date,resVer,note], index=df.columns)
-    newDf = df.append(newRow, ignore_index=True)
-    newDf.to_csv('newdata_timeline.csv', index=False)
-
+    if resVer not in df['res_ver(android)'].values:
+        newRow = pd.Series([date,resVer,note], index=df.columns)
+        newDf = df.append(newRow, ignore_index=True)
+        newDf.to_csv('newdata_timeline.csv', index=False)
+        print('record is added to the newdata_timeline.csv.')
 
 if __name__ == '__main__':
     #--Config--
@@ -66,5 +88,5 @@ if __name__ == '__main__':
     archiveDecManifests(date, resVer)
     parse()
     archivePrsManifests(date, resVer)
-    #appendRecord(date, resVer, note=None)
+    appendRecord(date, resVer, note)
 

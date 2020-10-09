@@ -167,3 +167,4 @@ weapon_data.py
 season
 cv.csv
 batch_rename.py
+backup/

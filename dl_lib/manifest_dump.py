@@ -4,13 +4,6 @@ from argparse import ArgumentParser
 from UnityPy import AssetsManager
 
 dl_cdn_header = 'http://dragalialost.akamaized.net/dl/assetbundles/'
-ROOT = os.path.dirname(os.path.realpath(__file__))
-DEC = os.path.join(ROOT, 'dec_manifests')
-PRS = os.path.join(ROOT, 'prs_manifests')
-
-os.makedirs(DEC, exist_ok=True)
-os.makedirs(PRS, exist_ok=True)
-
 pattern = r'string name = \"(.*)\"(?:\r)*(?:\n)*(?:\t)*string hash = \"(.*)\"'
 
 def process_json(tree):
@@ -69,8 +62,8 @@ def dump_all(dec_archive_folder, prs_archive_folder):
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='Dump and parse the decrypted manifests.')
-    parser.add_argument('-i', type=str, help='input folder', default=DEC)
-    parser.add_argument('-o', type=str, help='output folder', default=PRS)
+    parser.add_argument('-i', type=str, help='input folder', default='dec_manifests')
+    parser.add_argument('-o', type=str, help='output folder', default='prs_manifests')
     args = parser.parse_args()
 
     #dump_all('dec_manifests_archive/manifests_archive', 'prs_manifests_archive')
