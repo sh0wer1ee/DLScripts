@@ -45,7 +45,6 @@ def decrypt():
     print('decrypting...')
     manifest_decrypt.decrypt(manifest_decrypt.load_key(), manifest_decrypt.load_iv())
 
-
 def archiveDecManifests(date, resVer):
     archive_path = os.path.join(DEC_ARCHIVES, '%s_%s' % (date, resVer))
     os.makedirs(archive_path, exist_ok=True)
@@ -77,9 +76,9 @@ def appendRecord(date, resVer, note=None):
 
 if __name__ == '__main__':
     #--Config--
-    date = '20201009'
-    resVer = 'rUAJ84rrQoQKbHPT'
-    note = '14:00 master agito & wind platinum'
+    date = '20201012'
+    resVer = 'lgAMJZOe6RAUaGfu'
+    note = '13:40 halloween onslaught & dragon pickup/platinum'
     #--Config--
 
     download(date, resVer)
