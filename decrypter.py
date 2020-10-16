@@ -76,9 +76,9 @@ def appendRecord(date, resVer, note=None):
 
 if __name__ == '__main__':
     #--Config--
-    date = '20201012'
-    resVer = 'lgAMJZOe6RAUaGfu'
-    note = '13:40 halloween onslaught & dragon pickup/platinum'
+    date = '20201016'
+    resVer = '0s9kIoOlyfJCynPl'
+    note = '13:40 halloween fesex'
     #--Config--
 
     download(date, resVer)

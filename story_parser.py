@@ -44,7 +44,7 @@ def parseStory(filePath):
         for o in asset.objects.values():
             data = o.read()
             if str(data.type) == 'MonoBehaviour':
-                tree = data.read_type_tree()
+                tree = data.type_tree
                 outPath = OUTPUT +  generateName(filePath)
                 os.makedirs(os.path.dirname(outPath), exist_ok=True)
                 with open(outPath, 'w', encoding='utf-8-sig') as o:
