@@ -9,6 +9,7 @@ import asyncio
 import os
 import shutil
 import pandas as pd
+from argparse import ArgumentParser
 import dl_lib.manifest_grab as manifest_grab
 import dl_lib.manifest_decrypt as manifest_decrypt
 import dl_lib.manifest_dump as manifest_dump
@@ -74,13 +75,7 @@ def appendRecord(date, resVer, note=None):
         newDf.to_csv('newdata_timeline.csv', index=False)
         print('record is added to the newdata_timeline.csv.')
 
-if __name__ == '__main__':
-    #--Config--
-    date = '20201016'
-    resVer = '0s9kIoOlyfJCynPl'
-    note = '13:40 halloween fesex'
-    #--Config--
-
+def main(date, resVer, note):
     download(date, resVer)
     archiveManifests(date, resVer)
     decrypt()
@@ -89,3 +84,17 @@ if __name__ == '__main__':
     archivePrsManifests(date, resVer)
     appendRecord(date, resVer, note)
 
+if __name__ == '__main__':
+    #--Default--
+    date = '20201019'
+    resVer = 'i6KrmfdfCODkjIoY'
+    note = '13:40 library 1+2 rerun'
+    #--Default--
+
+    parser = ArgumentParser(description='Deal with manifests.')
+    parser.add_argument('-d', type=str, help='Date when new data came out (For record use)', default=date)
+    parser.add_argument('-r', type=str, help='Manifest resource version (just manifests folder name)', default=resVer)
+    parser.add_argument('-n', type=str, help='Memo for this update (For record use)', default=note)
+    args = parser.parse_args()
+
+    main(args.d, args.r, args.n)
