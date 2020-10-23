@@ -92,11 +92,11 @@ async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str):
 
 if __name__ == '__main__':
     #--Default--
-    new_manifest_folder = 'prs_manifests_archive/20201022_uEFtwvE4V2GcTlHf'
-    old_manifest_folder = 'prs_manifests_archive/20201019_i6KrmfdfCODkjIoY'
+    new_manifest_folder = 'prs_manifests_archive/20201023_QeOXRzaLSk9AkvEI'
+    old_manifest_folder = 'prs_manifests_archive/20201022_uEFtwvE4V2GcTlHf'
     lang = 'zh_cn'
     localized_only = False
-    folder_name = '20201022'
+    folder_name = '20201023'
     filter_str = None
     #--Default--
     
