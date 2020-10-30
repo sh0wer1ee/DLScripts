@@ -48,36 +48,36 @@ def parseStory(filePath):
                 outPath = OUTPUT +  generateName(filePath)
                 os.makedirs(os.path.dirname(outPath), exist_ok=True)
                 with open(outPath, 'w', encoding='utf-8-sig') as o:
-                    o.write(parseMono(tree['functions'][0]['commandList']))
+                    o.write(parseMono(tree))
                     o.close()
 
-def parseMono(mono):
+def parseMono(tree):
     res = ''
     olTitle = ''
-
-    for command in mono:
-        commandType = command['command']
-        commandData = command['args']
-
-        if commandType == 'OL_TITLE':
-            olTitle = commandData[0]
-            res = res + olTitle + ':\n'
-        elif commandType == 'outline':
-            if olTitle != '':
-                res = res + '\t' + commandData[0].replace('\\n', '\n\t').replace('{player_name}', playerName) + '\n'
-        elif commandType == 'telop':
-            res = res + '\n'
-            for arg in commandData:
-                if arg.strip() != '':
-                    res = res + '\t' + arg + '\n'
-            res = res + '\n'
-        elif commandType == 'add_book_text':
-            res = res + '\t' + commandData[0].replace('\\n', '\n\t').replace('{player_name}', playerName) + '\n\n'
-        elif commandType == 'print':
-            res = res + commandData[0].replace('{player_name}', playerName) + ':\n'
-            res = res + '\t' + commandData[1].replace('\\n', '\n\t').replace('{player_name}', playerName) + '\n'
-        # else:
-        #     continue
+    
+    for func in tree['functions']:
+        for command in func['commandList']:
+            commandType = command['command']
+            commandData = command['args']
+            if commandType == 'OL_TITLE':
+                olTitle = commandData[0]
+                res = res + olTitle + ':\n'
+            elif commandType == 'outline':
+                if olTitle != '':
+                    res = res + '\t' + commandData[0].replace('\\n', '\n\t').replace('{player_name}', playerName) + '\n'
+            elif commandType == 'telop':
+                res = res + '\n'
+                for arg in commandData:
+                    if arg.strip() != '':
+                        res = res + '\t' + arg + '\n'
+                res = res + '\n'
+            elif commandType == 'add_book_text':
+                res = res + '\t' + commandData[0].replace('\\n', '\n\t').replace('{player_name}', playerName) + '\n\n'
+            elif commandType == 'print':
+                res = res + commandData[0].replace('{player_name}', playerName) + ':\n'
+                res = res + '\t' + commandData[1].replace('\\n', '\n\t').replace('{player_name}', playerName) + '\n'
+            # else:
+            #     continue
 
     return res
 
