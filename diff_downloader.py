@@ -10,10 +10,6 @@ import timeit
 import tqdm
 import shutil
 
-#--Config--
-http_proxy = 'http://127.0.0.1:10809'
-#--Config--
-
 lang_list = ['zh_cn', 'zh_tw', 'en_us', 'jp']
 manifest_str = ['assetbundle', '.' , 'manifest']
 
@@ -29,7 +25,7 @@ def check_target_path(target):
             if exc.errno != errno.EEXIST:
                 raise
 
-async def download(session, source, target):
+async def download(session, source, target, http_proxy):
     if os.path.exists(target): # Empty file will not be redownload if timeout
         return
     async with session.get(source, proxy = http_proxy) as resp:
@@ -56,7 +52,7 @@ def read_manifest(manifest, folder_name, filter_str):
         exit(-1)
     return manifest_dic
 
-async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str):
+async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str, http_proxy):
     jp_manifest_dic = dict()
     other_manifest_dic = dict()
     manifest_dic = dict()
@@ -85,7 +81,7 @@ async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str):
 
     async with aiohttp.ClientSession() as session:     
         tasks = [
-            download(session, source, target)
+            download(session, source, target, http_proxy)
             for target, source in download_set] 
         for f in tqdm.tqdm(asyncio.as_completed(tasks), total=len(tasks), desc='Download progress'):
             await f
@@ -98,6 +94,7 @@ if __name__ == '__main__':
     localized_only = False
     folder_name = '20201030'
     filter_str = None
+    http_proxy = 'http://127.0.0.1:10809'
     #--Default--
     
     parser = ArgumentParser(description='Diff between versions and download the assets.')
@@ -107,11 +104,12 @@ if __name__ == '__main__':
     parser.add_argument('-c', type=str, help='Localized only? (True/False)', default=localized_only)
     parser.add_argument('-d', type=str, help='Download location', default=folder_name)
     parser.add_argument('-f', type=str, help='Filter string', default=filter_str)
+    parser.add_argument('-p', type=str, help='Http Proxy (proxy link/None)', default=filter_str)
     args = parser.parse_args()
 
     start = timeit.default_timer()
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(args.n, args.o, args.l, args.c, args.d, args.f))
+    loop.run_until_complete(main(args.n, args.o, args.l, args.c, args.d, args.f, args.p))
     end = timeit.default_timer()
 
     print('Time spent: ' + str(end-start) + ' second.')

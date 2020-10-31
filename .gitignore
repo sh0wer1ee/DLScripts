@@ -144,7 +144,6 @@ dmypy.json
 /combined
 aiscript.py
 assetdl_mt.py
-dec.exe
 diff_test.py
 email.sh
 gacha.py
