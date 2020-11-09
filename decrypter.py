@@ -86,9 +86,9 @@ def main(date, resVer, note):
 
 if __name__ == '__main__':
     #--Default--
-    date = '20201106'
-    resVer = 'yuTLFybqCfp3ydsw'
-    note = '13:40 light platinum & defend preview'
+    date = '20201109'
+    resVer = '2WwgQ0wZyx4oYt7S'
+    note = '13:40 defend battle'
     #--Default--
 
     parser = ArgumentParser(description='Deal with manifests.')

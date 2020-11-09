@@ -1,5 +1,5 @@
 # DLScripts
-Scripts for dl.
+Scripts for dl. Mainly for assets downloading.
 # Requirements
 `python -m pip install -r requirements.txt`
 # Usage
@@ -8,6 +8,6 @@ Scripts for dl.
 - ```diff_downloader.py```: Diff between two versions and download assets.
 ## Other tools
 - ```master_dump.py```: Dump mono jsons from ```master.asset```.
-- ```story_parser.py```: Dump and parse story assets into readable content, and rename them according to textlabel.
+- ```story_parser.py```: Dump and parse story assets into readable content, and rename them according to textlabel.(zh_cn only)
 ## Trash code
 - ```master_json.py```: A tool that automatically generates master json files. (meaningless...)
