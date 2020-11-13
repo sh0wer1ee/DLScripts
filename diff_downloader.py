@@ -88,11 +88,11 @@ async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str, http
 
 if __name__ == '__main__':
     #--Default--
-    new_manifest_folder = 'prs_manifests_archive/20201111_Q9dwsklV74JRzQk3'
-    old_manifest_folder = 'prs_manifests_archive/20201109_2WwgQ0wZyx4oYt7S'
+    new_manifest_folder = 'prs_manifests_archive/20201113_ziG2a3wZmqghCYnc'
+    old_manifest_folder = 'prs_manifests_archive/20201111_Q9dwsklV74JRzQk3'
     lang = 'zh_cn'
     localized_only = False
-    folder_name = '20201111'
+    folder_name = '20201113'
     filter_str = None
     http_proxy = 'http://127.0.0.1:10809'
     #--Default--
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     parser.add_argument('-c', type=str, help='Localized only? (True/False)', default=localized_only)
     parser.add_argument('-d', type=str, help='Download location', default=folder_name)
     parser.add_argument('-f', type=str, help='Filter string', default=filter_str)
-    parser.add_argument('-p', type=str, help='Http Proxy (proxy link/None)', default=filter_str)
+    parser.add_argument('-p', type=str, help='Http Proxy (proxy link/None)', default=http_proxy)
     args = parser.parse_args()
 
     start = timeit.default_timer()
