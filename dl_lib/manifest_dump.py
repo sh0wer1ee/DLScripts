@@ -45,12 +45,15 @@ def export_obj(obj, filepath, buildtarget):
             with open(filepath, 'w') as f:
                 for p in parsed_list:
                     path = p[0] if p[0] != 'shader' else '_shader' # deal with the name conflict
+                    # In fact the assets has a '.a' filename extension, but I am too lazy to change the unpack code.
+                    # f.write('%s.a,%s%s/%s/%s\n' % (path , dl_cdn_header, sp[1], p[1][0:2], p[1]))
                     f.write('%s,%s%s/%s/%s\n' % (path , dl_cdn_header, sp[1], p[1][0:2], p[1]))
 
 def parse(manifest):
     mlist = re.findall(pattern, manifest, re.MULTILINE)
     return mlist
 
+# Trash code
 def dump_all(dec_archive_folder, prs_archive_folder):
     os.makedirs(dec_archive_folder, exist_ok=True)
     os.makedirs(prs_archive_folder, exist_ok=True)

@@ -94,7 +94,7 @@ if __name__ == '__main__':
     localized_only = False
     folder_name = '20201113'
     filter_str = None
-    http_proxy = 'http://127.0.0.1:10809'
+    http_proxy = 'http://127.0.0.1:10809' # You should change this to None or your own proxy.
     #--Default--
     
     parser = ArgumentParser(description='Diff between versions and download the assets.')

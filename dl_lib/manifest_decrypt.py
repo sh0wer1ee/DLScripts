@@ -1,5 +1,7 @@
 # decrypt /manifests_archive/*/*.manifest to /dec_manifests/
 
+# The python implementation is verrrrry slow, so I use a compiled C# program to complete the work.
+
 import os
 from hashlib import sha256
 from argparse import ArgumentParser
