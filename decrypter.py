@@ -42,9 +42,15 @@ def archiveManifests(date, resVer):
             shutil.copy(os.path.join(MANIFESTS, f), archive_path)
     print('manifests archived.')
 
-def decrypt():
+def decrypt(method):
     print('decrypting...')
-    manifest_decrypt.decrypt(manifest_decrypt.load_key(), manifest_decrypt.load_iv())
+    if method == 'cs':
+        manifest_decrypt.decrypt(manifest_decrypt.load_key(), manifest_decrypt.load_iv())
+    elif method == 'py':
+        manifest_decrypt.decryptPy(manifest_decrypt.load_key(), manifest_decrypt.load_iv(), MANIFESTS, DEC)
+    else:
+        print('method does not exist.')
+        exit(-1)
 
 def archiveDecManifests(date, resVer):
     archive_path = os.path.join(DEC_ARCHIVES, '%s_%s' % (date, resVer))
@@ -75,10 +81,10 @@ def appendRecord(date, resVer, note=None):
         newDf.to_csv('newdata_timeline.csv', index=False)
         print('record is added to the newdata_timeline.csv.')
 
-def main(date, resVer, note):
+def main(date, resVer, note, method):
     download(date, resVer)
     archiveManifests(date, resVer)
-    decrypt()
+    decrypt(method)
     archiveDecManifests(date, resVer)
     parse()
     archivePrsManifests(date, resVer)
@@ -89,12 +95,14 @@ if __name__ == '__main__':
     date = '20201116'
     resVer = '0RerC7y9c9oBQ2mK'
     note = '13:40 2020newyear rerun'
+    method = 'cs'
     #--Default--
 
     parser = ArgumentParser(description='Deal with manifests.')
     parser.add_argument('-d', type=str, help='Date when new data came out (For record use)', default=date)
     parser.add_argument('-r', type=str, help='Manifest resource version (just manifests folder name)', default=resVer)
     parser.add_argument('-n', type=str, help='Memo for this update (For record use)', default=note)
+    parser.add_argument('-m', type=str, help='Method for decryption (py or cs)', default=method)
     args = parser.parse_args()
 
-    main(args.d, args.r, args.n)
+    main(args.d, args.r, args.n, args.m)

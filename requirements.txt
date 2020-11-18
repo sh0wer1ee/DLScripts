@@ -3,3 +3,4 @@ aiohttp
 pandas
 pillow
 tqdm
+py3rijndael

@@ -3,6 +3,8 @@
 # The python implementation is verrrrry slow, so I use a compiled C# program to complete the work.
 
 import os
+import base64
+import py3rijndael
 from hashlib import sha256
 from argparse import ArgumentParser
 
@@ -36,6 +38,42 @@ def check_keyiv(key, iv):
 # Input and output folders are hard coded in the C# code.
 def decrypt(key, iv):
     os.system('dec.exe ' + bytes.decode(key) + ' ' + bytes.decode(iv))
+
+# The pure-python decrypt method
+# This is very slow (around 30 seconds) and buggy (see the comments below).
+def decryptPy(key, iv, input_folder, output_folder):
+    print('Warning: this procedure is very slow and buggy.')
+    print('\tPlease read the comments in dl_lib/manifest_decrypt.py if error.')
+    rijndael_cbc = py3rijndael.rijndael.RijndaelCbc(
+        key=base64.b64decode(key),
+        iv=base64.b64decode(iv),
+        padding=py3rijndael.ZeroPadding(32),
+        block_size=32
+        )
+    for root, dirs, files in os.walk(input_folder, topdown=False):
+        for f in files:
+            src = os.path.realpath(os.path.join(root, f))
+            if ".manifest" in src:
+                print("processing " + src + "...")
+                try:
+                    rj256dec(src, f, rijndael_cbc, output_folder)
+                except AssertionError:
+                    print('len(source) \% self.block_size != 0! File skipped.')
+                    # Please note that py3rijndael does not offer the none-padding.
+                    # So Zero-padding will raise an AssertionError if dec_bin % blocksize != 0.
+                    # If that happened, you can either
+                    # 1) use C# program
+                    # 2) modify the source code, change class RijndaelCbc(Rijndael).decrypt(self, cipher),
+                    #    and comment "pt = self.padding.decode(ppt)" then change the return statement "return ppt".
+                    
+    print("finished.")
+
+def rj256dec(enc, dec, rijndael_cbc, output_folder):
+    with open(enc, "rb") as e:
+        enc_bin = e.read()
+        dec_bin = rijndael_cbc.decrypt(enc_bin)      
+        with open(os.path.join(output_folder, dec), "wb") as d:
+            d.write(dec_bin)
     
 # Trash code
 def decAll(archive_folder, dec_archive_folder, key, iv):
