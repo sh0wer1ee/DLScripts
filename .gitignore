@@ -168,3 +168,6 @@ cv.csv
 batch_rename.py
 backup/
 voices
+func_asset
+func_output
+func_parser.py
