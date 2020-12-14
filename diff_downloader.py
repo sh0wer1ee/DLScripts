@@ -88,11 +88,11 @@ async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str, http
 
 if __name__ == '__main__':
     #--Default--
-    new_manifest_folder = 'prs_manifests_archive/20201211_Sh3XK6NMv7neVgaf'
-    old_manifest_folder = 'prs_manifests_archive/20201207_gh2V8gX93j1K5xyD'
+    new_manifest_folder = 'prs_manifests_archive/20201214_w3z3UrxBrkDE8Jsq'
+    old_manifest_folder = 'prs_manifests_archive/20201211_Sh3XK6NMv7neVgaf'
     lang = 'zh_cn'
     localized_only = False
-    folder_name = '20201211'
+    folder_name = '20201214'
     filter_str = None
     http_proxy = 'http://127.0.0.1:10809' # You should change this to None or your own proxy.
     #--Default--
@@ -103,7 +103,7 @@ if __name__ == '__main__':
     parser.add_argument('-l', type=str, help='Language version (jp/zh_cn/zh_tw/en_us)', default=lang)
     parser.add_argument('-c', type=str, help='Localized only? (True/False)', default=localized_only)
     parser.add_argument('-d', type=str, help='Download location', default=folder_name)
-    parser.add_argument('-f', type=str, help='Filter string', default=filter_str)
+    parser.add_argument('-f', type=str, help='Filter string (Case sensitive)', default=filter_str)
     parser.add_argument('-p', type=str, help='Http Proxy (proxy link/None)', default=http_proxy)
     args = parser.parse_args()
 
