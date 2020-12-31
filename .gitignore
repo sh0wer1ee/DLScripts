@@ -171,3 +171,6 @@ voices
 func_asset
 func_output
 func_parser.py
+actions_parser.py
+assets
+actions

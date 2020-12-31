@@ -5,7 +5,7 @@ import json
 import unicodedata
 from UnityPy import AssetsManager
 
-masterFilepath = 'master/'
+masterFilepath = 'assets/'
 jsonPath = 'json/'
 outputPath = 'wall/'
 os.makedirs(masterFilepath, exist_ok=True)
@@ -95,7 +95,7 @@ def retrievePossible70mc():
                     print('CHARA_NAME_' + sid[:8])
             
 def main():
-    dumpAllJson(masterFilepath, 'MonoBehaviour')
+    dumpAllJson('assets/master', 'MonoBehaviour')
     retrieveWallData()
     retrievePossible70mc()
 
