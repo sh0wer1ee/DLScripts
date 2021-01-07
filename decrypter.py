@@ -4,8 +4,8 @@
         Archive the files (raw manifests, decrypted manifests, parsed manifests).
         Add record to newdata_timeline.csv.
 '''
-import aiohttp
 import asyncio
+import aiohttp
 import os
 import shutil
 import pandas as pd
@@ -92,9 +92,9 @@ def main(date, resVer, note, method):
 
 if __name__ == '__main__':
     #--Default--
-    date = '20201231'
-    resVer = 'SAcWiaRBfYDT4FGS'
-    note = '14:00 2021 new year event'
+    date = '20210107'
+    resVer = 'wp3GuzxBjCGZ6woB'
+    note = '13:40 Yoshitsune'
     method = 'cs'
     #--Default--
 
