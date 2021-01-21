@@ -88,11 +88,11 @@ async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str, http
 
 if __name__ == '__main__':
     #--Default--
-    new_manifest_folder = 'prs_manifests_archive/20210118_blAHaHz3JJzPrQ4t'
-    old_manifest_folder = 'prs_manifests_archive/20210114_vowpPQc9CWVLsh43'
+    new_manifest_folder = 'prs_manifests_archive/20210121_pD55N4pURD9xoQVV'
+    old_manifest_folder = 'prs_manifests_archive/20210118_blAHaHz3JJzPrQ4t'
     lang = 'zh_cn'
     localized_only = False
-    folder_name = '20210118'
+    folder_name = '../%s' % new_manifest_folder.split('/')[1].split('_')[0]
     filter_str = None
     http_proxy = 'http://127.0.0.1:10809' # You should change this to None or your own proxy.
     #--Default--
