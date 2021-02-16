@@ -47,7 +47,7 @@ def dumpJson(path):
                 if str(data.type) == 'MonoBehaviour':
                     print('dumping %s...' % data.name)
                     tree = data.type_tree
-                    with open(path + data.name + '.json', 'w', encoding='utf8') as f:
+                    with open(f'{path}{data.name}.json', 'w', encoding='utf8') as f:
                         json.dump(process_json(tree), f, indent=2, ensure_ascii=False)
                         f.close()
 
