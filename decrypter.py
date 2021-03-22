@@ -92,9 +92,9 @@ def main(date, resVer, note, method):
 
 if __name__ == '__main__':
     #--Default--
-    date = '20210319'
-    resVer = 'YTfMCr1A0g7lMmLf'
-    note = '13:40 light platinum'
+    date = '20210322'
+    resVer = 'KT53ClV4RXFvW9E7'
+    note = '14:00 chapter 18 part2'
     method = 'cs'
     #--Default--
 
