@@ -88,8 +88,8 @@ async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str, http
 
 if __name__ == '__main__':
     #--Default--
-    new_manifest_folder = 'prs_manifests_archive/20210326_Un0bkHWwy32qpXz3'
-    old_manifest_folder = 'prs_manifests_archive/20210325_r5a6coMxoGOvBd6t'
+    new_manifest_folder = 'prs_manifests_archive/20210327_4FVz205eYMAyS8lm'
+    old_manifest_folder = 'prs_manifests_archive/20210326_Un0bkHWwy32qpXz3'
     lang = 'zh_cn'
     localized_only = False
     folder_name = '../%s' % new_manifest_folder.split('/')[1].split('_')[0]

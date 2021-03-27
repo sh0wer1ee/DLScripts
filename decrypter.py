@@ -28,10 +28,10 @@ os.makedirs(DEC_ARCHIVES, exist_ok=True)
 os.makedirs(PRS, exist_ok=True)
 os.makedirs(PRS_ARCHIVES, exist_ok=True)
 
-def download(date, resVer):
+def download(date, resVer, httpProxy):
     print('downloading manifests...')
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(manifest_grab.main(resVer, 'Android', MANIFESTS))
+    loop.run_until_complete(manifest_grab.main(resVer, 'Android', MANIFESTS, httpProxy))
     print('manifests download completed.')
 
 def archiveManifests(date, resVer):
@@ -81,8 +81,8 @@ def appendRecord(date, resVer, note=None):
         newDf.to_csv('newdata_timeline.csv', index=False)
         print('record is added to the newdata_timeline.csv.')
 
-def main(date, resVer, note, method):
-    download(date, resVer)
+def main(date, resVer, note, method, httpProxy):
+    download(date, resVer, httpProxy)
     archiveManifests(date, resVer)
     decrypt(method)
     archiveDecManifests(date, resVer)
@@ -92,10 +92,11 @@ def main(date, resVer, note, method):
 
 if __name__ == '__main__':
     #--Default--
-    date = '20210326'
-    resVer = 'Un0bkHWwy32qpXz3'
-    note = '14:00 LEGEND WATER AGITO'
+    date = '20210327'
+    resVer = '4FVz205eYMAyS8lm'
+    note = '13:40 2.5 Anniversary'
     method = 'cs'
+    httpProxy = 'http://127.0.0.1:10809' # Change this
     #--Default--
 
     parser = ArgumentParser(description='Deal with manifests.')
@@ -103,6 +104,8 @@ if __name__ == '__main__':
     parser.add_argument('-r', type=str, help='Manifest resource version (just manifests folder name)', default=resVer)
     parser.add_argument('-n', type=str, help='Memo for this update (For record use)', default=note)
     parser.add_argument('-m', type=str, help='Method for decryption (py or cs)', default=method)
+    parser.add_argument('-p', type=str, help='Http Proxy (proxy link/None)', default=httpProxy)
+    
     args = parser.parse_args()
 
-    main(args.d, args.r, args.n, args.m)
+    main(args.d, args.r, args.n, args.m, args.p)
