@@ -69,7 +69,7 @@ async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str, http
         other_manifest_dic = read_manifest(os.path.join(mdir, str(manifest_str[0] + manifest_str[1] + lang + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
     manifest_dic = {**jp_manifest_dic, **other_manifest_dic}
 
-    if o_mdir is not None:
+    if o_mdir is not None and o_mdir != 'None':
         old_jp_manifest_dic = read_manifest(os.path.join(o_mdir, str(manifest_str[0] + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
         if lang != lang_list[3]:
             old_other_manifest_dic = read_manifest(os.path.join(o_mdir, str(manifest_str[0] + manifest_str[1] + lang + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
@@ -88,8 +88,8 @@ async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str, http
 
 if __name__ == '__main__':
     #--Default--
-    new_manifest_folder = 'prs_manifests_archive/20210327_4FVz205eYMAyS8lm'
-    old_manifest_folder = 'prs_manifests_archive/20210326_Un0bkHWwy32qpXz3'
+    new_manifest_folder = 'prs_manifests_archive/20210401_B8oDqcD4n595WW4S'
+    old_manifest_folder = 'prs_manifests_archive/20210327_4FVz205eYMAyS8lm'
     lang = 'zh_cn'
     localized_only = False
     folder_name = '../%s' % new_manifest_folder.split('/')[1].split('_')[0]
