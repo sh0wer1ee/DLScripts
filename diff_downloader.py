@@ -69,7 +69,7 @@ async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str, http
         other_manifest_dic = read_manifest(os.path.join(mdir, str(manifest_str[0] + manifest_str[1] + lang + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
     manifest_dic = {**jp_manifest_dic, **other_manifest_dic}
 
-    if o_mdir is not None and o_mdir != 'None':
+    if o_mdir is not None:
         old_jp_manifest_dic = read_manifest(os.path.join(o_mdir, str(manifest_str[0] + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
         if lang != lang_list[3]:
             old_other_manifest_dic = read_manifest(os.path.join(o_mdir, str(manifest_str[0] + manifest_str[1] + lang + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
@@ -106,6 +106,8 @@ if __name__ == '__main__':
     parser.add_argument('-f', type=str, help='Filter string (Case sensitive)', default=filter_str)
     parser.add_argument('-p', type=str, help='Http Proxy (proxy link/None)', default=http_proxy)
     args = parser.parse_args()
+    if args.o == 'None':
+        args.o = None
 
     start = timeit.default_timer()
     loop = asyncio.get_event_loop()

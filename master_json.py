@@ -40,16 +40,15 @@ def dumpJson(path):
     os.makedirs(path, exist_ok=True)
     response = requests.get(fetchNewestMasterUrl())#, proxies=proxies)
     if(response.status_code == 200):
-        am = UnityPy.AssetsManager(response.content)
-        for asset in am.assets.values():
-            for o in asset.objects.values():
-                data = o.read()
-                if str(data.type) == 'MonoBehaviour':
-                    print('dumping %s...' % data.name)
-                    tree = data.type_tree
-                    with open(f'{path}{data.name}.json', 'w', encoding='utf8') as f:
-                        json.dump(process_json(tree), f, indent=2, ensure_ascii=False)
-                        f.close()
+        env = UnityPy.load(response.content)
+        for obj in env.objects:
+            if str(obj.type) == 'MonoBehaviour':
+                data = obj.read()
+                print('dumping %s...' % data.name)
+                tree = data.type_tree
+                with open(f'{path}{data.name}.json', 'w', encoding='utf8') as f:
+                    json.dump(process_json(tree), f, indent=2, ensure_ascii=False)
+                    f.close()
 
 if __name__ == '__main__':
     dumpJson('json/')

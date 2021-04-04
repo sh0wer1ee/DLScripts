@@ -10,7 +10,7 @@ import shutil
 import json
 import tqdm
 import errno
-from UnityPy import AssetsManager
+import UnityPy
 
 # story.awakeningstory/rarity*_1*****_**
 # story.castlestory/100****
@@ -39,17 +39,17 @@ dragondataJson = json.load(open(masterJSONPath + 'DragonData.json', encoding='ut
 
 
 def parseStory(filePath):
-    am = AssetsManager(filePath)
-    for asset in am.assets.values():
-        for o in asset.objects.values():
-            data = o.read()
-            if str(data.type) == 'MonoBehaviour':
-                tree = data.type_tree
-                outPath = OUTPUT +  generateName(filePath)
-                os.makedirs(os.path.dirname(outPath), exist_ok=True)
-                with open(outPath, 'w', encoding='utf-8-sig') as o:
-                    o.write(parseMono(tree))
-                    o.close()
+    env = UnityPy.load(filePath)
+    for obj in env.objects:
+        if obj.type in ['MonoBehaviour']:
+            data = obj.read()
+            tree = data.type_tree
+            outPath = OUTPUT +  generateName(filePath)
+            os.makedirs(os.path.dirname(outPath), exist_ok=True)
+            with open(outPath, 'w', encoding='utf-8-sig') as o:
+                o.write(parseMono(tree))
+                o.close()
+                
 
 def parseMono(tree):
     res = ''

@@ -3,7 +3,7 @@ import re
 import shutil
 import json
 import unicodedata
-from UnityPy import AssetsManager
+import UnityPy
 
 masterFilepath = 'assets/'
 jsonPath = 'json/'
@@ -47,14 +47,13 @@ def process_json(tree):
     return tree
 
 def dumpAllJson(filepath, type):
-    am = AssetsManager(filepath)
-    for asset in am.assets.values():
-        for o in asset.objects.values():
-            data = o.read()
-            if str(data.type) == type:
-                tree = data.type_tree
-                with open(jsonPath + data.name + '.json', 'w', encoding='utf8') as f:
-                    json.dump(process_json(tree), f, indent=2, ensure_ascii=False)
+    env = UnityPy.load(filepath)
+    for obj in env.objects:
+        data = obj.read()
+        if str(obj.type) == type:
+            tree = data.type_tree
+            with open(jsonPath + data.name + '.json', 'w', encoding='utf8') as f:
+                json.dump(process_json(tree), f, indent=2, ensure_ascii=False)
 
 def retrieveWallData():
     wallPrefix = '21601'
