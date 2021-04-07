@@ -92,9 +92,9 @@ def main(date, resVer, note, method, httpProxy):
 
 if __name__ == '__main__':
     #--Default--
-    date = '20210402'
-    resVer = 'EpsR0JB7zSO5w4Pn'
-    note = '14:00 alberius'
+    date = '20210407'
+    resVer = 'vV26vt33rpPRoANd'
+    note = '13:40 fes 70mc trails'
     method = 'cs'
     httpProxy = 'http://127.0.0.1:10809' # Change this
     #--Default--

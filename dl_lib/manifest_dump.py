@@ -1,7 +1,7 @@
 import os
 import re
+import UnityPy
 from argparse import ArgumentParser
-from UnityPy import AssetsManager
 
 dl_cdn_header = 'http://dragalialost.akamaized.net/dl/assetbundles/'
 pattern = r'string name = \"(.*)\"(?:\r)*(?:\n)*(?:\t)*string hash = \"(.*)\"'
@@ -29,13 +29,10 @@ def main(input_folder, output_folder):
 
 
 def extract_assets(src, filepath):
-    am = AssetsManager(src)
-    for asset in am.assets.values():
-        buildtarget = asset.target_platform
-        for obj in asset.container.values():
-            export_obj(obj, filepath, buildtarget)
-
-
+    env = UnityPy.load(src)
+    for obj in env.objects:
+        export_obj(obj, filepath, obj.platform)
+        
 def export_obj(obj, filepath, buildtarget):
     sp = str(buildtarget).split('.')
     data = obj.read()
