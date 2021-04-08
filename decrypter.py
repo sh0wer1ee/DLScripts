@@ -35,7 +35,7 @@ def download(date, resVer, httpProxy):
     print('manifests download completed.')
 
 def archiveManifests(date, resVer):
-    archive_path = '%s/%s_%s' % (ARCHIVES, date, resVer)
+    archive_path = f'{ARCHIVES}/{date}_{resVer}'
     os.makedirs(archive_path, exist_ok=True)
     for f in os.listdir(MANIFESTS):
         if 'manifest' in f:
@@ -53,7 +53,7 @@ def decrypt(method):
         exit(-1)
 
 def archiveDecManifests(date, resVer):
-    archive_path = os.path.join(DEC_ARCHIVES, '%s_%s' % (date, resVer))
+    archive_path = os.path.join(DEC_ARCHIVES, f'{date}_{resVer}')
     os.makedirs(archive_path, exist_ok=True)
     for f in os.listdir(DEC):
         if 'manifest' in f:
@@ -66,7 +66,7 @@ def parse():
     print('finished.')
 
 def archivePrsManifests(date, resVer):
-    archive_path = os.path.join(PRS_ARCHIVES, '%s_%s' % (date, resVer))
+    archive_path = os.path.join(PRS_ARCHIVES, f'{date}_{resVer}')
     os.makedirs(archive_path, exist_ok=True)
     for f in os.listdir(PRS):
         if 'manifest' in f:
@@ -92,11 +92,11 @@ def main(date, resVer, note, method, httpProxy):
 
 if __name__ == '__main__':
     #--Default--
-    date = '20210407'
-    resVer = 'vV26vt33rpPRoANd'
-    note = '13:40 fes 70mc trails'
+    date = 'YYYYMMDD' # 20210407 for example
+    resVer = '****************' # vV26vt33rpPRoANd for example
+    note = 'Note example'
     method = 'cs'
-    httpProxy = 'http://127.0.0.1:10809' # Change this
+    httpProxy = None
     #--Default--
 
     parser = ArgumentParser(description='Deal with manifests.')

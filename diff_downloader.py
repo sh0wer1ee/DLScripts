@@ -11,7 +11,7 @@ import tqdm
 import shutil
 
 lang_list = ['zh_cn', 'zh_tw', 'en_us', 'jp']
-manifest_str = ['assetbundle', '.' , 'manifest']
+manifest_str = ['assetbundle', 'manifest']
 
 def merge_path_dir(path):
     new_dir = os.path.dirname(path).replace('/', '.')
@@ -45,10 +45,10 @@ def read_manifest(manifest, folder_name, filter_str):
                 sp = l.split(',')
                 if not filter_str or filter_str in sp[0]:
                     if sp[1].strip() != '':
-                        manifest_dic['%s/%s' % (folder_name, merge_path_dir(sp[0].strip()))] = sp[1].strip()
+                        manifest_dic[f'{folder_name}/{merge_path_dir(sp[0].strip())}'] = sp[1].strip()
             m.close()
     except FileNotFoundError:
-        print("%s not exists!" % manifest)
+        print(f'Cannot find {manifest}. Exiting...')
         exit(-1)
     return manifest_dic
 
@@ -60,20 +60,37 @@ async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str, http
     old_other_manifest_dic = dict()
     old_manifest_dic = dict()
     download_set = set()
-    if lang not in lang_list:
-        print("-l should be jp/en_us/zh_cn/zh_tw!") 
-        exit(0) 
+    temp_manifest_str = manifest_str.copy()
 
-    jp_manifest_dic = read_manifest(os.path.join(mdir, str(manifest_str[0] + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
+    if lang not in lang_list:
+        print('-l should be jp/en_us/zh_cn/zh_tw!') 
+        exit(0)
+    if folder_name is None:
+        if 'prs_manifests_archive/' in mdir:
+            date = mdir.split('/')[1].split('_')[0]
+            folder_name = f'../{date}'
+        else:
+            folder_name = 'newdata'
+
+    jp_manifest_path = os.path.join(mdir, '.'.join(manifest_str))
+    jp_manifest_dic = read_manifest(jp_manifest_path, folder_name, filter_str)
     if lang != lang_list[3]:
-        other_manifest_dic = read_manifest(os.path.join(mdir, str(manifest_str[0] + manifest_str[1] + lang + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
-    manifest_dic = {**jp_manifest_dic, **other_manifest_dic}
+        temp_manifest_str.insert(1, lang)
+        other_manifest_path = os.path.join(mdir, '.'.join(temp_manifest_str))
+        other_manifest_dic = read_manifest(other_manifest_path, folder_name, filter_str)
+        manifest_dic = {**jp_manifest_dic, **other_manifest_dic}
+    else:
+        manifest_dic = jp_manifest_dic
 
     if o_mdir is not None:
-        old_jp_manifest_dic = read_manifest(os.path.join(o_mdir, str(manifest_str[0] + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
+        old_jp_manifest_path = os.path.join(o_mdir, '.'.join(manifest_str))
+        old_jp_manifest_dic = read_manifest(old_jp_manifest_path, folder_name, filter_str)
         if lang != lang_list[3]:
-            old_other_manifest_dic = read_manifest(os.path.join(o_mdir, str(manifest_str[0] + manifest_str[1] + lang + manifest_str[1] + manifest_str[2])), folder_name, filter_str)
-        old_manifest_dic = {**old_jp_manifest_dic, **old_other_manifest_dic}
+            old_other_manifest_path = os.path.join(o_mdir, '.'.join(temp_manifest_str))
+            old_other_manifest_dic = read_manifest(old_other_manifest_path, folder_name, filter_str)
+            old_manifest_dic = {**old_jp_manifest_dic, **old_other_manifest_dic}
+        else:
+            old_manifest_dic = old_jp_manifest_dic
     if localized_only:
         download_set = other_manifest_dic.items() - old_other_manifest_dic.items()
     else:
@@ -88,13 +105,13 @@ async def main(mdir, o_mdir, lang, localized_only, folder_name, filter_str, http
 
 if __name__ == '__main__':
     #--Default--
-    new_manifest_folder = 'prs_manifests_archive/20210407_vV26vt33rpPRoANd'
-    old_manifest_folder = 'prs_manifests_archive/20210402_EpsR0JB7zSO5w4Pn'
+    new_manifest_folder = 'prs_manifests_archive/YYYYMMDD_****************' # example
+    old_manifest_folder = None
     lang = 'zh_cn'
     localized_only = False
-    folder_name = '../%s' % new_manifest_folder.split('/')[1].split('_')[0]
+    folder_name = None
     filter_str = None
-    http_proxy = 'http://127.0.0.1:10809' # You should change this to None or your own proxy.
+    http_proxy = None
     #--Default--
     
     parser = ArgumentParser(description='Diff between versions and download the assets.')
@@ -106,8 +123,6 @@ if __name__ == '__main__':
     parser.add_argument('-f', type=str, help='Filter string (Case sensitive)', default=filter_str)
     parser.add_argument('-p', type=str, help='Http Proxy (proxy link/None)', default=http_proxy)
     args = parser.parse_args()
-    if args.o == 'None':
-        args.o = None
 
     start = timeit.default_timer()
     loop = asyncio.get_event_loop()
