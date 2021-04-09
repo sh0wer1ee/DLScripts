@@ -29,6 +29,9 @@ os.makedirs(PRS, exist_ok=True)
 os.makedirs(PRS_ARCHIVES, exist_ok=True)
 
 def download(date, resVer, httpProxy):
+    if len(resVer) != 16:
+        print('wrong res_ver format.')
+        exit(-1)
     print('downloading manifests...')
     loop = asyncio.get_event_loop()
     loop.run_until_complete(manifest_grab.main(resVer, 'Android', MANIFESTS, httpProxy))
