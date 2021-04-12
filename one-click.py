@@ -3,16 +3,16 @@ import os
 
 #--CONFIG--
 proxy = 'http://127.0.0.1:10809'
-date = '20210409'# <--
-res_ver = 'Wq0Jhjwnhv6dYIdB'# <--
-memo = '14:00 dragon legend (¿ why you changed the news)'# <--
+date = '20210412'# <--
+res_ver = '725KSe0jjK7dUQZq'# <--
+memo = '14:00 onslaught event (¿ why you changed the news AGAIN)'# <--
 new = f'prs_manifests_archive/{date}_{res_ver}'
-old = 'prs_manifests_archive/20210407_vV26vt33rpPRoANd'# <--
+old = 'prs_manifests_archive/20210409_Wq0Jhjwnhv6dYIdB'# <--
 DIFF_ONLY = False # <---- important
 #--CONFIG--
 
 def decrypter():
-    os.system(f'python decrypter.py -d "{date}" -r "{res_ver}" -p "{proxy}"')
+    os.system(f'python decrypter.py -d "{date}" -r "{res_ver}" -n "{memo}" -p "{proxy}"')
     os.system('pause')
 def diff_downloader():
     os.system(f'python diff_downloader.py -n "{new}" -o "{old}" -p "{proxy}"')
