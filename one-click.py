@@ -3,11 +3,11 @@ import os
 
 #--CONFIG--
 proxy = 'http://127.0.0.1:10809'
-date = '20210415'# <--
-res_ver = 'tKNhlutrX4LPXPUk'# <--
-memo = '14:00 fesex(??????)'# <--
+date = '20210419'# <--
+res_ver = 'vX73NiY8Guq7cM1e'# <--
+memo = '14:00 time attack'# <--
 new = f'prs_manifests_archive/{date}_{res_ver}'
-old = 'prs_manifests_archive/20210412_725KSe0jjK7dUQZq'# <--
+old = 'prs_manifests_archive/20210415_tKNhlutrX4LPXPUk'# <--
 DIFF_ONLY = False # <---- important
 #--CONFIG--
 
@@ -22,6 +22,8 @@ def newdata_heatmap():
     os.system('pause')
 
 if __name__ == '__main__':
+    #os.system(f'python diff_downloader.py -n "{old}" -f "emotion/story/" -d "asset" -p "{proxy}"')
+    #exit()
     if DIFF_ONLY:
         diff_downloader()
     else:
