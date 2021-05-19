@@ -3,11 +3,11 @@ import os
 
 #--CONFIG--
 proxy = 'http://127.0.0.1:10809'
-date = '20210517'# <--
-res_ver = 'y7mMOZkLLfhLRi0w'# <--
-memo = '14:00 feh ss'# <--
+date = '20210519'# <--
+res_ver = 'OZuxGHxRaHfdO6li'# <--
+memo = '14:00 time attack'# <--
 new = f'prs_manifests_archive/{date}_{res_ver}'
-old = 'prs_manifests_archive/20210513_ifOfPf3yu0McfeK7'# <--
+old = 'prs_manifests_archive/20210517_y7mMOZkLLfhLRi0w'# <--
 DIFF_ONLY = False # <---- important
 #--CONFIG--
 
@@ -19,6 +19,11 @@ def diff_downloader():
     os.system('pause')
 def newdata_heatmap():
     os.system('python newdata_heatmap.py')
+    os.system('pause')
+def auto_deploy():
+    os.system('git add -A')
+    os.system(f'git commit -m "{date}-{res_ver}"')
+    os.system('git push --force')
 
 if __name__ == '__main__':
     #os.system(f'python diff_downloader.py -n "{old}" -f "emotion/story/" -d "asset" -p "{proxy}"')
@@ -29,3 +34,4 @@ if __name__ == '__main__':
         decrypter()
         diff_downloader()
         newdata_heatmap()
+        auto_deploy()
