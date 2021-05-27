@@ -3,11 +3,11 @@ import os
 
 #--CONFIG--
 proxy = 'http://127.0.0.1:10809'
-date = '20210524'# <--
-res_ver = 'SDpfeV5FQQnDwPP9'# <--
-memo = '14:00 chapter 19 part2'# <--
+date = '20210527'# <--
+res_ver = 'kB2MLWQWg56aHAXB'# <--
+memo = '11:00 app update'# <--
 new = f'prs_manifests_archive/{date}_{res_ver}'
-old = 'prs_manifests_archive/20210519_OZuxGHxRaHfdO6li'# <--
+old = 'prs_manifests_archive/20210524_SDpfeV5FQQnDwPP9'# <--
 DIFF_ONLY = False # <---- important
 #--CONFIG--
 
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     if DIFF_ONLY:
         diff_downloader()
     else:
-        decrypter()
+        #decrypter()
         diff_downloader()
         newdata_heatmap()
         auto_deploy()
