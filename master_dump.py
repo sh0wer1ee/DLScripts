@@ -97,7 +97,7 @@ def retrievePossible70mc():
                     print('CHARA_NAME_' + sid[:8])
             
 def main():
-    dumpAllJson('assets/master', 'MonoBehaviour')
+    #dumpAllJson('assets/master', 'MonoBehaviour')
     retrieveWallData()
     retrievePossible70mc()
 
