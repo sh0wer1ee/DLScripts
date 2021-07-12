@@ -1,33 +1,42 @@
 import sys
 import os
 
-#--CONFIG--
+# --CONFIG--
 proxy = 'http://127.0.0.1:10809'
-date = '20210705'# <--
-res_ver = 'fI7jhauwoSwa6wYg'# <-- 
-memo = '14:00 summer mumu'# <--
+date = '20210712'  # <--
+res_ver = '8KoUb8Dh71LI4SZS'  # <--
+memo = '14:00 summer defense'  # <--
 new = f'prs_manifests_archive/{date}_{res_ver}'
-old = 'prs_manifests_archive/20210702_YNwOzst3Uo3AZtGQ'# <--
-DIFF_ONLY = False # <---- important
-#--CONFIG--
+old = 'prs_manifests_archive/20210705_fI7jhauwoSwa6wYg'  # <--
+DIFF_ONLY = False  # <---- important
+# --CONFIG--
+
 
 def decrypter():
-    os.system(f'python decrypter.py -d "{date}" -r "{res_ver}" -n "{memo}" -p "{proxy}"')
+    os.system(
+        f'python decrypter.py -d "{date}" -r "{res_ver}" -n "{memo}" -p "{proxy}"')
     os.system('pause')
+
+
 def diff_downloader():
     os.system(f'python diff_downloader.py -n "{new}" -o "{old}" -p "{proxy}"')
     os.system('pause')
+
+
 def newdata_heatmap():
     os.system('python newdata_heatmap.py')
     os.system('pause')
+
+
 def auto_deploy():
     os.system('git add -A')
     os.system(f'git commit -m "{date}-{res_ver}"')
     os.system('git push --force')
 
+
 if __name__ == '__main__':
     #os.system(f'python diff_downloader.py -n "{old}" -f "emotion/story/" -d "asset" -p "{proxy}"')
-    #exit()
+    # exit()
     if DIFF_ONLY:
         diff_downloader()
     else:
