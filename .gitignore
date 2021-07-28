@@ -169,7 +169,8 @@ batch_rename.py
 backup/
 voices
 func_asset
-func_output
+func_output/diff/
+func_output/history/
 func_parser.py
 actions_parser.py
 assets
