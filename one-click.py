@@ -3,11 +3,11 @@ import os
 
 # --CONFIG--
 proxy = 'http://127.0.0.1:10809'
-date = '20210922'  # <--
-res_ver = 'NceYC42v2FDyUQ8P'  # <--
-memo = '14:00 chapter 21 part2'  # <--
+date = '20210924'  # <--
+res_ver = 'Jx5NWnuqQQ27WCj9'  # <--
+memo = '11:30 app update & unity version update?'  # <--
 new = f'prs_manifests_archive/{date}_{res_ver}'
-old = 'prs_manifests_archive/20210921_KKAtp8GrkgrG4Y72'  # <--
+old = 'prs_manifests_archive/20210922_NceYC42v2FDyUQ8P'  # <--
 DIFF_ONLY = False  # <---- important
 # --CONFIG--
 
