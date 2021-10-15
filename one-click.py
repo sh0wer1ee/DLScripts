@@ -3,11 +3,11 @@ import os
 
 # --CONFIG--
 proxy = 'http://127.0.0.1:10809'
-date = '20211014'  # <--
-res_ver = '3bxh5y6bknJQMaN1'  # <--
-memo = '14:00 raid daily dmg target adjustment'  # <--
+date = '20211015'  # <--
+res_ver = 'zajwQY4CyhPSR9W6'  # <--
+memo = '14:00 fes ex'  # <--
 new = f'prs_manifests_archive/{date}_{res_ver}'
-old = 'prs_manifests_archive/20211013_ccWWbFWDwvSUdKlw'  # <--
+old = 'prs_manifests_archive/20211014_3bxh5y6bknJQMaN1'  # <--
 DIFF_ONLY = False  # <---- important
 # --CONFIG--
 
