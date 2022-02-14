@@ -3,11 +3,11 @@ import os
 
 # --CONFIG--
 proxy = 'http://127.0.0.1:10809'
-date = '20220208'  # <--
-res_ver = 'UWHJ8UNxZaJsQpZy'  # <--
-memo = '14:00 zena 70mc'  # <--
+date = '20220214'  # <--
+res_ver = 'yLgDW73F4XfhyeOP'  # <--
+memo = '14:00 VD'  # <--
 new = f'prs_manifests_archive/{date}_{res_ver}'
-old = 'prs_manifests_archive/20220204_2C0917SnsI7PI7qD'  # <--
+old = 'prs_manifests_archive/20220208_UWHJ8UNxZaJsQpZy'  # <--
 DIFF_ONLY = False  # <---- important
 # --CONFIG--
 
