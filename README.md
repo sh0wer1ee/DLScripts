@@ -7,7 +7,9 @@ Scripts for dl. Mainly for assets downloading.
 - ```one-click.py```: For personal use, it saves a lot of time.
 - ```decrypter.py```: Download the manifests of given resource version, then decrypt and parse. Archive the files (raw manifests, decrypted manifests, parsed manifests). Add record to newdata_timeline.csv. (Need key and iv to work, **DO NOT** ask for that.)  
 > - As for the resource version (aka manifest version), you can obtain it from a rooted phone (or an emulator that can toggle root status), go to ```/data/data/com.nintendo.zaga/files/manifests/{THIS RANDOM STRING}```, the folder name is exactly the version. Or use some ways to capture the traffic while downloading the manifests, the url contains the version string.
-> - Key and iv can be found via reverse-engineering (and datamining).
+> - ~~Key and iv can be found via reverse-engineering (and datamining).~~
+> - ```Key: 2JDKdLwjKMDLgxXGsI4AxBQ9t7d7of9Jp5gQkdBryoM=```
+> - ```Iv: HzL3PqQVDY4H1QvMn5KghO+Is8NnJ+ydTYafQb+8HpI=```
 > - The py3rijndael is a bit slow while processing the manifests, and it didn't offer none-padding mode, so I used a compiled C# program to handle the work. Source code is provided as ```dec.cs```. You can use python one though, please read the comment in ```dl_lib/manifest_decrypt.py```.
 - ```diff_downloader.py```: Diff between two versions and download assets.
 > - Note: This script can be run without key/iv or the version string.
